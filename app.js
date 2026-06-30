@@ -152,6 +152,161 @@ function computePrediction(health) {
   return Math.max(1, Math.round(health * 0.07));
 }
 
+// ================================================================
+// PREDICTIVE ANALYTICS
+// ================================================================
+
+// Remaining Useful Life (days) based on sensor stress and health
+function computeRUL(eq) {
+  const tS = stressRatio(eq.temp, eq.tempRange);
+  const vS = stressRatio(eq.vib,  eq.vibRange);
+  const pS = stressRatio(eq.pres, eq.presRange);
+  const composite = tS * 0.35 + vS * 0.45 + pS * 0.20;
+  const ratePerDay = 0.10 + composite * 2.40; // health pts/day
+  return Math.min(730, Math.max(1, Math.round((eq.health - 15) / ratePerDay)));
+}
+
+// Failure probability at 7 / 30 / 90 days (exponential model)
+function computeFailureProb(rul) {
+  const p = n => Math.round(Math.min(99, (1 - Math.exp(-n / (rul * 0.55))) * 100));
+  return { d7: p(7), d30: p(30), d90: p(90) };
+}
+
+// Root cause analysis from sensor stress levels
+function getRootCauses(eq) {
+  const tS = stressRatio(eq.temp, eq.tempRange);
+  const vS = stressRatio(eq.vib,  eq.vibRange);
+  const pS = stressRatio(eq.pres, eq.presRange);
+
+  const CAUSE_MAP = {
+    temp: [
+      { ar: 'الحرارة ضمن النطاق الطبيعي',      detail: 'لا يوجد إجهاد حراري ملحوظ.' },
+      { ar: 'ارتفاع طفيف في درجة الحرارة',     detail: 'قد يشير إلى نقص بسيط في التشحيم أو تراكم ترسبات.' },
+      { ar: 'ارتفاع حاد — إجهاد حراري خطير',   detail: 'نقص التشحيم، انسداد دورة التبريد، أو تآكل احتكاكي متقدم.' }
+    ],
+    vib: [
+      { ar: 'الاهتزاز ضمن الحدود الاعتيادية',  detail: 'ديناميكية التشغيل مستقرة.' },
+      { ar: 'اهتزاز متصاعد — تحذير مبكر',      detail: 'بداية تآكل المحامل أو فقدان التوازن الدوار.' },
+      { ar: 'اهتزاز مفرط — خطر انهيار ميكانيكي',detail: 'تآكل حاد في المحامل، خلل ديناميكي، أو كسر جزئي محتمل.' }
+    ],
+    pres: [
+      { ar: 'الضغط ضمن النطاق الطبيعي',        detail: 'لا يوجد شذوذ في منظومة الضغط.' },
+      { ar: 'تذبذب في الضغط',                  detail: 'ضعف في الصمامات أو انسداد جزئي في المرشحات.' },
+      { ar: 'ضغط شاذ — خطر على السلامة',        detail: 'انسداد حاد في المرشحات، تآكل الصمامات، أو تراكم الرواسب.' }
+    ]
+  };
+
+  const lvl = s => s > 0.68 ? 2 : s > 0.42 ? 1 : 0;
+
+  return [
+    { sensor: 'حراري',  stress: Math.round(tS*100), color: 'var(--chart-t)', ...CAUSE_MAP.temp[lvl(tS)] },
+    { sensor: 'اهتزاز', stress: Math.round(vS*100), color: 'var(--chart-v)', ...CAUSE_MAP.vib[lvl(vS)]  },
+    { sensor: 'ضغط',   stress: Math.round(pS*100), color: 'var(--chart-p)', ...CAUSE_MAP.pres[lvl(pS)] }
+  ].sort((a, b) => b.stress - a.stress);
+}
+
+// Spare parts catalog per equipment
+const SPARE_PARTS_DB = {
+  tb1: [
+    { nameAr: 'محمل رئيسي SKF 6320',          qty: 2, leadDays: 21, cost: 8500 },
+    { nameAr: 'زيت تشحيم صناعي Mobil (20L)',   qty: 4, leadDays: 3,  cost: 1200 },
+    { nameAr: 'حشية مانعة تسرب مطاطية',       qty: 6, leadDays: 5,  cost: 380  }
+  ],
+  tb2: [
+    { nameAr: 'ريشة توربين (Grade A)',          qty: 3, leadDays: 45, cost: 24000 },
+    { nameAr: 'مسمار تثبيت الريشة M16',        qty: 16, leadDays: 7, cost: 85   },
+    { nameAr: 'غاسل عزل اهتزاز',              qty: 4,  leadDays: 10, cost: 620  }
+  ],
+  tb3: [
+    { nameAr: 'طوق ختم ميكانيكي',             qty: 2,  leadDays: 14, cost: 3200 },
+    { nameAr: 'حشية عمود جرافيتية',           qty: 4,  leadDays: 7,  cost: 450  },
+    { nameAr: 'خاتم كربوني للختم',             qty: 2,  leadDays: 10, cost: 780  }
+  ],
+  gn1: [
+    { nameAr: 'شريط عازل Class H',             qty: 10, leadDays: 14, cost: 1800 },
+    { nameAr: 'راتنج إيبوكسي للملفات',        qty: 2,  leadDays: 7,  cost: 2400 },
+    { nameAr: 'موصل نحاسي للتوصيل',          qty: 4,  leadDays: 10, cost: 950  }
+  ],
+  gn2: [
+    { nameAr: 'فلتر مياه تبريد',              qty: 3,  leadDays: 5,  cost: 680  },
+    { nameAr: 'مضخة دوران مياه',             qty: 1,  leadDays: 21, cost: 6500 },
+    { nameAr: 'حشية أنابيب سيليكون',          qty: 8,  leadDays: 3,  cost: 120  }
+  ],
+  gn3: [
+    { nameAr: 'فرشاة كربون للمثير',           qty: 8,  leadDays: 7,  cost: 420  },
+    { nameAr: 'خاتم انزلاق نحاسي',           qty: 2,  leadDays: 14, cost: 3800 },
+    { nameAr: 'صمام تيار ثنائي',             qty: 4,  leadDays: 10, cost: 1200 }
+  ],
+  bl1: [
+    { nameAr: 'أنبوب تبادل حراري (INOX)',    qty: 6,  leadDays: 30, cost: 4200 },
+    { nameAr: 'حشية شبكة المبادل',           qty: 2,  leadDays: 14, cost: 1800 },
+    { nameAr: 'مادة إحكام مقاومة للحرارة',   qty: 3,  leadDays: 7,  cost: 560  }
+  ],
+  bl2: [
+    { nameAr: 'صمام أمان بخاري',             qty: 2,  leadDays: 21, cost: 7500 },
+    { nameAr: 'وصلة مرنة مقاومة ضغط',        qty: 2,  leadDays: 14, cost: 2800 },
+    { nameAr: 'حشية غطاء الطبل',             qty: 4,  leadDays: 7,  cost: 640  }
+  ],
+  bl3: [
+    { nameAr: 'حلقة ختم ميكانيكي للمضخة',   qty: 2,  leadDays: 10, cost: 4600 },
+    { nameAr: 'بكرة دفع المضخة',             qty: 1,  leadDays: 21, cost: 9800 },
+    { nameAr: 'صمام رجعي (6 بوصة)',          qty: 2,  leadDays: 14, cost: 3200 }
+  ],
+  fs1: [
+    { nameAr: 'بكرة مضخة وقود',             qty: 1,  leadDays: 14, cost: 5200 },
+    { nameAr: 'حلقة O-Ring ختم الوقود',      qty: 8,  leadDays: 3,  cost: 90   },
+    { nameAr: 'صمام رجعي وقود (3 بوصة)',    qty: 2,  leadDays: 10, cost: 1400 }
+  ],
+  fs2: [
+    { nameAr: 'عنصر ترشيح وقود (10 ميكرون)',qty: 4,  leadDays: 5,  cost: 380  },
+    { nameAr: 'حلقة إحكام O-Ring',           qty: 12, leadDays: 3,  cost: 45   },
+    { nameAr: 'غطاء وعاء الفلتر',           qty: 1,  leadDays: 14, cost: 2100 }
+  ],
+  fs3: [
+    { nameAr: 'رأس فوهة حقن (Type B)',       qty: 4,  leadDays: 21, cost: 6800 },
+    { nameAr: 'مرشح دقيق الفوهة',           qty: 8,  leadDays: 7,  cost: 320  },
+    { nameAr: 'مصبّر ضغط الحقن',            qty: 2,  leadDays: 14, cost: 1900 }
+  ]
+};
+
+function getSpareParts(eq) {
+  const base = (SPARE_PARTS_DB[eq.id] || []);
+  const urgLabel = eq.risk === 'high' ? 'urgent' : eq.risk === 'medium' ? 'soon' : 'routine';
+  return base.map(p => ({ ...p, urgency: urgLabel }));
+}
+
+function getRecommendedActions(eq, causes) {
+  const rul = computeRUL(eq);
+  const actions = [];
+  const top = causes[0];
+
+  if (eq.risk === 'high') {
+    actions.push({ p: 'critical', icon: '🚨', text: 'إيقاف المعدة فوراً وإجراء فحص ميداني شامل', when: 'الآن' });
+  } else if (eq.risk === 'medium') {
+    actions.push({ p: 'high', icon: '⚠️', text: 'جدولة صيانة احترازية فورية', when: 'خلال 7 أيام' });
+  }
+
+  if (top.sensor === 'اهتزاز' && top.stress > 55) {
+    actions.push({ p: 'high', icon: '🔧', text: 'فحص المحامل وقياس التوازن الديناميكي بمحلل الاهتزاز', when: 'خلال 48 ساعة' });
+    actions.push({ p: 'medium', icon: '🔩', text: 'مراجعة إحكام جميع وصلات التثبيت', when: 'خلال أسبوع' });
+  }
+  if (top.sensor === 'حراري' && top.stress > 55) {
+    actions.push({ p: 'high', icon: '🌡️', text: 'فحص مستوى الزيت ونظام التشحيم', when: 'خلال 24 ساعة' });
+    actions.push({ p: 'medium', icon: '🧹', text: 'تنظيف مبادل الحرارة وفحص وحدة التبريد', when: 'خلال 72 ساعة' });
+  }
+  if (top.sensor === 'ضغط' && top.stress > 55) {
+    actions.push({ p: 'medium', icon: '🔍', text: 'فحص الصمامات وتنظيف المرشحات', when: 'خلال 72 ساعة' });
+    actions.push({ p: 'medium', icon: '📏', text: 'قياس معدل التدفق والتحقق من اتساق الضغط', when: 'خلال أسبوع' });
+  }
+
+  if (rul <= 60) {
+    actions.push({ p: 'medium', icon: '📦', text: 'إرسال طلب شراء قطع الغيار المحددة', when: `خلال ${Math.min(7, Math.max(1, rul - 14))} أيام` });
+  }
+  actions.push({ p: 'low', icon: '📋', text: 'توثيق القراءات في نظام CMMS', when: 'دورياً' });
+
+  return actions.slice(0, 6);
+}
+
 function riskLabel(r) { return { low: 'سليم', medium: 'تحذير', high: 'خطر' }[r]; }
 
 function riskNote(r) {
@@ -288,6 +443,8 @@ function diagHTML(eq) {
   const pDec = eq.pres >= 100 ? 0 : 1;
   const predDays  = computePrediction(eq.health);
   const predColor = predDays <= 7 ? 'var(--red)' : predDays <= 21 ? 'var(--amber)' : 'var(--blue)';
+  const rul  = computeRUL(eq);
+  const prob = computeFailureProb(rul);
 
   const arrow = d =>
     d > 0 ? '<span class="trend-up">▲</span>'   :
@@ -322,6 +479,43 @@ function diagHTML(eq) {
       </div>
     </div>
 
+    <!-- RUL Timeline -->
+    <div class="rul-block">
+      <div class="rul-header-row">
+        <span class="rul-label">العمر التشغيلي المتبقي</span>
+        <span class="rul-days-val" style="color:${
+          rul <= 14 ? 'var(--red)' : rul <= 60 ? 'var(--amber)' : 'var(--green)'
+        }">${rul} يوم</span>
+      </div>
+      <div class="rul-bar-track">
+        <div class="rul-bar-fill ${eq.risk}" style="width:${Math.min(100, Math.round(rul / 3))}%"></div>
+      </div>
+      <div class="rul-scale-row">
+        <span>اليوم</span>
+        <span style="color:${rul<=14?'var(--red)':rul<=60?'var(--amber)':'var(--green)'}">↓ عطل متوقع</span>
+        <span>${Math.min(730, rul * 2)} يوم</span>
+      </div>
+    </div>
+
+    <!-- Failure Probability -->
+    <div class="prob-block">
+      <div class="prob-block-title">احتمالية العطل</div>
+      <div class="prob-boxes">
+        <div class="prob-box ${prob.d7 >= 40 ? 'high' : prob.d7 >= 15 ? 'medium' : 'low'}">
+          <div class="prob-num">${prob.d7}٪</div>
+          <div class="prob-period">7 أيام</div>
+        </div>
+        <div class="prob-box ${prob.d30 >= 50 ? 'high' : prob.d30 >= 25 ? 'medium' : 'low'}">
+          <div class="prob-num">${prob.d30}٪</div>
+          <div class="prob-period">30 يوم</div>
+        </div>
+        <div class="prob-box ${prob.d90 >= 65 ? 'high' : prob.d90 >= 35 ? 'medium' : 'low'}">
+          <div class="prob-num">${prob.d90}٪</div>
+          <div class="prob-period">90 يوم</div>
+        </div>
+      </div>
+    </div>
+
     <div class="pred-block">
       <div class="pred-header">
         <span class="pred-icon">⚠</span>
@@ -345,6 +539,65 @@ function diagHTML(eq) {
       </div>
       <div class="budget-note">${eq.budgetNote}</div>
     </div>`;
+}
+
+function maintenanceHTML(eq) {
+  const causes  = getRootCauses(eq);
+  const parts   = getSpareParts(eq);
+  const actions = getRecommendedActions(eq, causes);
+  const rul     = computeRUL(eq);
+  const totalCost = parts.reduce((s, p) => s + p.cost * p.qty, 0);
+  const maxLead   = Math.max(...parts.map(p => p.leadDays));
+
+  const urgLabelMap = { urgent: 'عاجل', soon: 'خلال 30 يوم', routine: 'روتيني' };
+  const urgClass    = { urgent: 'high',  soon: 'medium',       routine: 'low'     };
+  const pClass      = { critical: 'high', high: 'high', medium: 'medium', low: 'low' };
+  const pIcon       = { critical: '🚨', high: '⚠️', medium: '🔶', low: '✅' };
+
+  return `
+    <div class="maint-section-label">تحليل أسباب التدهور</div>
+    ${causes.map(c => `
+      <div class="rcause-card">
+        <div class="rcause-top">
+          <span class="rcause-sensor">${c.sensor}</span>
+          <span class="rcause-stress ${c.stress > 68 ? 'high' : c.stress > 42 ? 'medium' : 'low'}">${c.stress}٪ إجهاد</span>
+        </div>
+        <div class="rcause-name">${c.ar}</div>
+        <div class="rcause-detail">${c.detail}</div>
+        <div class="rcause-bar-track">
+          <div class="rcause-bar-fill" style="width:${c.stress}%;background:${c.color}"></div>
+        </div>
+      </div>`).join('')}
+
+    <div class="maint-section-label" style="margin-top:14px">قطع الغيار المطلوبة</div>
+    <table class="sparts-table">
+      <thead><tr><th>القطعة</th><th>الكمية</th><th>الأولوية</th><th>التكلفة</th></tr></thead>
+      <tbody>
+        ${parts.map(p => `
+          <tr>
+            <td>${p.nameAr}</td>
+            <td class="sparts-qty">${p.qty}</td>
+            <td><span class="urgency-badge ${urgClass[p.urgency]}">${urgLabelMap[p.urgency]}</span></td>
+            <td class="sparts-cost">${p.cost.toLocaleString('ar-SA')} ر.س</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+    <div class="sparts-footer">
+      <span>الإجمالي: <strong>${totalCost.toLocaleString('ar-SA')} ر.س</strong></span>
+      <span>وقت التوريد: <strong>≤ ${maxLead} يوم</strong></span>
+    </div>
+
+    <div class="maint-section-label" style="margin-top:14px">الإجراءات الموصى بها</div>
+    <ol class="action-list">
+      ${actions.map(a => `
+        <li class="action-item ${pClass[a.p] || 'low'}">
+          <span class="action-icon-em">${pIcon[a.p] || '✅'}</span>
+          <div class="action-body">
+            <div class="action-text">${a.text}</div>
+            <div class="action-when">${a.when}</div>
+          </div>
+        </li>`).join('')}
+    </ol>`;
 }
 
 function analyticsHTML(eq) {
@@ -425,8 +678,9 @@ function renderDetail(eq) {
     </div>
 
     <div class="dtabs-row">
-      <button class="dtab ${activeTab === 'diag'      ? 'active' : ''}" data-pane="diag">تشخيص</button>
-      <button class="dtab ${activeTab === 'analytics' ? 'active' : ''}" data-pane="analytics">تحليلات</button>
+      <button class="dtab ${activeTab === 'diag'        ? 'active' : ''}" data-pane="diag">تشخيص</button>
+      <button class="dtab ${activeTab === 'analytics'   ? 'active' : ''}" data-pane="analytics">تحليلات</button>
+      <button class="dtab ${activeTab === 'maintenance' ? 'active' : ''}" data-pane="maintenance">صيانة</button>
     </div>
 
     <div class="dtab-pane" id="pane-diag"
@@ -437,6 +691,11 @@ function renderDetail(eq) {
     <div class="dtab-pane" id="pane-analytics"
          style="${activeTab === 'analytics' ? '' : 'display:none'}">
       ${analyticsHTML(eq)}
+    </div>
+
+    <div class="dtab-pane" id="pane-maintenance"
+         style="${activeTab === 'maintenance' ? '' : 'display:none'}">
+      ${maintenanceHTML(eq)}
     </div>`;
 }
 
