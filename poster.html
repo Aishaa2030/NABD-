@@ -230,23 +230,46 @@ body { background:#040a1e; display:flex; justify-content:center; padding:20px 0;
 .goal-title { font-size:9.5px; font-weight:700; color:#f0c040; letter-spacing:.5px; }
 .goal-text  { font-size:8.5px; color:rgba(200,225,255,.72); line-height:1.7; }
 
+
 /* ─────────────────────────────────────────────────
-   07  FOOTER
+   07  FOOTER  (with QR)
 ───────────────────────────────────────────────── */
 .footer {
   display:flex; justify-content:space-between; align-items:center;
-  padding:7px 0 10px;
-  border-top:1px solid rgba(0,180,255,.10);
-  margin-top:auto; flex-shrink:0;
+  gap:10px;
+  padding:8px 0 14px;
+  border-top:1px solid rgba(0,180,255,.12);
+  margin-top:auto; margin-bottom:4px; flex-shrink:0;
+}
+.footer-qr-wrap {
+  display:flex; align-items:center; gap:7px;
+}
+.footer-qr {
+  width:50px; height:50px; min-width:50px;
+  border-radius:6px;
+  border:1px solid rgba(0,200,255,.28);
+  background:#030a1e;
+  display:block;
+}
+.footer-qr-info { display:flex; flex-direction:column; gap:2px; }
+.footer-qr-label {
+  font-size:8px; font-weight:700; color:#00c8ff; letter-spacing:.5px;
+}
+.footer-qr-url {
+  font-family:'Rajdhani',sans-serif;
+  font-size:7px; color:rgba(0,200,255,.45); letter-spacing:.4px;
 }
 .footer-hash {
-  font-size:7.5px; font-weight:700;
-  color:rgba(0,200,255,.36); letter-spacing:.5px;
+  font-size:7px; font-weight:700;
+  color:rgba(0,200,255,.32); letter-spacing:.4px;
+  text-align:center; flex:1;
+  line-height:1.8;
 }
 .footer-brand {
   font-family:'Rajdhani',sans-serif;
-  font-size:11px; font-weight:700;
+  font-size:13px; font-weight:700;
   color:rgba(255,255,255,.80); letter-spacing:1px;
+  white-space:nowrap;
 }
 .footer-brand b { color:#00c8ff; }
 
@@ -399,10 +422,21 @@ body { background:#040a1e; display:flex; justify-content:center; padding:20px 0;
       </div>
     </div>
 
-    <!-- 07 FOOTER -->
+    <!-- 07 FOOTER + QR -->
     <div class="footer">
-      <div class="footer-hash">#نبض_الطاقة &nbsp;·&nbsp; #رؤية٢٠٣٠ &nbsp;·&nbsp; #الصيانة_التنبؤية</div>
-      <div class="footer-brand"><b>NABD</b> نبض</div>
+      <div class="footer-qr-wrap">
+        <img
+          class="footer-qr"
+          src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https%3A%2F%2Faishaa2030.github.io%2FNABD-%2Findex.html&color=00c8ff&bgcolor=030a1e&qzone=1"
+          alt="QR — نبض الطاقة"
+          width="50" height="50">
+        <div class="footer-qr-info">
+          <div class="footer-qr-label">جرّب المنصة</div>
+          <div class="footer-qr-url">aishaa2030.github.io/NABD-/index.html</div>
+        </div>
+      </div>
+      <div class="footer-hash">#نبض_الطاقة<br>#رؤية٢٠٣٠<br>#الصيانة_التنبؤية</div>
+      <div class="footer-brand"><b>NABD</b><br>نبض</div>
     </div>
 
   </div>
