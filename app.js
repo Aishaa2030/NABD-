@@ -59,7 +59,7 @@ const unitsData = [
     ]
   },
   {
-    id: 'boiler', nameEn: 'Boiler', nameAr: 'المرجل', icon: '🔥',
+    id: 'boiler', nameEn: 'Boiler', nameAr: 'الغلاية', icon: '🔥',
     equipment: [
       {
         id: 'bl1', nameEn: 'Heat Exchanger', nameAr: 'المبادل الحراري',
