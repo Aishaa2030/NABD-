@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>نبض الطاقة — Poster</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body { background:#000; display:flex; justify-content:center; }
+
+/* ─── POSTER CANVAS ─────────────────────────────── */
+.poster {
+  width: 820px;
+  background: #07101f;
+  color: #fff;
+  font-family: 'Cairo', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ─── HERO ──────────────────────────────────────── */
+.hero {
+  position: relative;
+  height: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Atmospheric glow layers */
+.hero::before {
+  content:'';
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 90% 55% at 50% -5%,  rgba(0,128,255,.55) 0%,  transparent 65%),
+    radial-gradient(ellipse 50% 35% at 15% 85%,  rgba(0,180,255,.12) 0%,  transparent 55%),
+    radial-gradient(ellipse 45% 30% at 85% 80%,  rgba(0,255,134,.08) 0%,  transparent 55%);
+}
+
+/* Circuit-grid texture */
+.hero-grid {
+  position:absolute; inset:0;
+  opacity:.07;
+  background-image:
+    linear-gradient(rgba(0,128,255,1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,128,255,1) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* Dot matrix over grid */
+.hero-dots {
+  position:absolute; inset:0;
+  opacity:.04;
+  background-image: radial-gradient(circle, #fff 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Big decorative turbine — right */
+.deco-right {
+  position:absolute; right:-50px; top:50%;
+  transform:translateY(-50%);
+  width:400px; height:400px;
+  opacity:.09;
+}
+/* Big decorative turbine — left */
+.deco-left {
+  position:absolute; left:-70px; top:50%;
+  transform:translateY(-50%);
+  width:320px; height:320px;
+  opacity:.07;
+}
+
+/* Vertical year strip */
+.year-strip {
+  position:absolute; left:16px; top:0; bottom:0;
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+  gap:2px;
+}
+.year-strip span {
+  font-family:'Rajdhani',sans-serif;
+  font-size:15px; font-weight:700;
+  color:rgba(50,194,255,.45);
+  letter-spacing:1px;
+}
+
+/* Hero content */
+.hero-content {
+  position:relative; z-index:2;
+  text-align:center; display:flex;
+  flex-direction:column; align-items:center;
+}
+
+.hero-eyebrow {
+  font-family:'Rajdhani',sans-serif;
+  font-size:12px; font-weight:700;
+  letter-spacing:8px;
+  color:rgba(50,194,255,.8);
+  margin-bottom:10px;
+}
+
+.hero-logo-wrap {
+  width:100px; margin-bottom:12px;
+  filter: drop-shadow(0 0 20px rgba(0,128,255,.7));
+}
+
+.hero-title {
+  font-size:104px; font-weight:900;
+  line-height:.9; color:#fff;
+  text-shadow:
+    0 0 90px rgba(0,128,255,.9),
+    0 0 35px rgba(0,128,255,.5),
+    0 6px 28px rgba(0,0,0,.7);
+  margin-bottom:10px;
+}
+.hero-title span { color:#32c2ff; }
+
+.hero-sub {
+  font-size:17px; font-weight:600;
+  color:rgba(255,255,255,.72);
+  letter-spacing:.5px; margin-bottom:22px;
+}
+
+.hero-tagrow {
+  display:flex; align-items:center; gap:14px;
+  font-family:'Rajdhani',sans-serif;
+  font-size:12px; letter-spacing:4px;
+  color:rgba(50,194,255,.6);
+}
+.hero-tagrow::before, .hero-tagrow::after {
+  content:''; width:55px; height:1px;
+  background:rgba(50,194,255,.3);
+}
+
+/* ─── SECTION SPACING ───────────────────────────── */
+.section { margin:0 28px 18px; }
+
+/* ─── INTRO CARD (النسخة الأولى) ─────────────────── */
+.intro-card {
+  display:flex; align-items:stretch; gap:0;
+  background:rgba(0,72,190,.22);
+  border:1px solid rgba(0,128,255,.28);
+  border-radius:12px; overflow:hidden;
+}
+
+.intro-left {
+  background:rgba(0,80,200,.28);
+  padding:22px 26px;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  min-width:170px; text-align:center;
+  flex-shrink:0;
+}
+.intro-badge {
+  font-family:'Rajdhani',sans-serif;
+  font-size:80px; font-weight:700;
+  color:#0080ff; line-height:.9;
+  text-shadow: 0 0 30px rgba(0,128,255,.5);
+}
+.intro-badge-sub {
+  font-size:11px; font-weight:700;
+  letter-spacing:2px; color:rgba(50,194,255,.8);
+  font-family:'Rajdhani',sans-serif;
+  margin-top:4px;
+}
+
+.intro-sep {
+  width:1px;
+  background:linear-gradient(to bottom, transparent, rgba(0,128,255,.4), transparent);
+}
+
+.intro-right {
+  padding:20px 22px;
+}
+.intro-title {
+  font-size:21px; font-weight:700;
+  color:#fff; margin-bottom:4px;
+}
+.intro-title-en {
+  font-family:'Rajdhani',sans-serif;
+  font-size:11px; letter-spacing:3px;
+  color:rgba(50,194,255,.5); margin-bottom:10px;
+}
+.intro-body {
+  font-size:13.5px; line-height:1.9;
+  color:rgba(255,255,255,.76);
+}
+
+/* ─── FEATURES STRIP ────────────────────────────── */
+.feat-strip {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+}
+.feat-item {
+  background:rgba(0,50,140,.22);
+  border:1px solid rgba(0,128,255,.18);
+  border-radius:9px; padding:14px 8px;
+  text-align:center; transition:.2s;
+}
+.feat-icon { font-size:22px; margin-bottom:7px; display:block; }
+.feat-name { font-size:12px; font-weight:700; color:rgba(50,194,255,.9); line-height:1.4; }
+
+/* ─── STATS BLOCK ───────────────────────────────── */
+.stats-block {
+  background:rgba(0,38,110,.3);
+  border:1px solid rgba(0,128,255,.2);
+  border-radius:12px; overflow:hidden;
+}
+
+.stats-row {
+  display:grid; grid-template-columns:1fr auto 1fr 1fr;
+  align-items:center;
+}
+
+.stat-cell {
+  padding:22px 14px; text-align:center;
+  border-left:1px solid rgba(0,128,255,.12);
+}
+.stat-cell:last-child { border-left:none; }
+
+.stat-label {
+  font-size:11px; font-weight:700;
+  color:rgba(50,194,255,.7); margin-bottom:4px;
+}
+.stat-num {
+  font-family:'Rajdhani',sans-serif;
+  font-size:76px; font-weight:700;
+  color:#fff; line-height:1;
+  text-shadow:0 0 25px rgba(0,128,255,.35);
+}
+.stat-unit {
+  font-size:10.5px; color:rgba(255,255,255,.42);
+  margin-top:4px; line-height:1.4;
+}
+
+/* Logo in center of stats */
+.stat-logo-cell {
+  padding:16px 12px; text-align:center;
+  border-left:1px solid rgba(0,128,255,.12);
+}
+.stat-logo-cell img {
+  width:90px; opacity:.85;
+  filter:drop-shadow(0 0 12px rgba(0,128,255,.5));
+}
+
+/* Stats bottom fact strip */
+.stats-facts {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  background:rgba(0,60,160,.18);
+  border-top:1px solid rgba(0,128,255,.14);
+  padding:10px 0;
+}
+.stats-fact {
+  display:flex; align-items:center; justify-content:center;
+  gap:7px; font-size:11.5px; color:rgba(255,255,255,.62);
+  padding:4px 14px;
+  border-left:1px solid rgba(0,128,255,.1);
+}
+.stats-fact:last-child { border-left:none; }
+.fact-dot {
+  width:7px; height:7px; border-radius:50%; flex-shrink:0;
+}
+
+/* ─── TIMELINE ──────────────────────────────────── */
+.timeline-wrap {
+  background:rgba(0,44,130,.25);
+  border:1px solid rgba(0,128,255,.22);
+  border-radius:12px; padding:20px 24px;
+}
+
+.tl-head {
+  display:flex; align-items:flex-end; gap:16px; margin-bottom:22px;
+}
+.tl-head-text .t1 {
+  font-size:21px; font-weight:700; color:#fff;
+}
+.tl-head-text .t2 {
+  font-family:'Rajdhani',sans-serif; font-size:11px;
+  letter-spacing:3px; color:rgba(50,194,255,.5); margin-top:1px;
+}
+.tl-head-line {
+  flex:1; height:1px;
+  background:linear-gradient(90deg, rgba(0,128,255,.45), transparent);
+}
+
+.tl-row {
+  display:flex; align-items:flex-start;
+  justify-content:space-between; position:relative;
+}
+
+.tl-connector {
+  position:absolute; top:20px; left:10%; right:10%; height:2px;
+  background:linear-gradient(90deg, #0080ff 0%, #32c2ff 50%, #00b86a 100%);
+  z-index:0;
+}
+
+.tl-node {
+  position:relative; z-index:1;
+  display:flex; flex-direction:column;
+  align-items:center; width:22%; text-align:center;
+}
+.tl-bubble {
+  width:42px; height:42px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px; margin-bottom:10px;
+  border:2.5px solid; box-shadow:0 0 18px rgba(0,128,255,.4);
+}
+.tl-node:nth-child(2) .tl-bubble { background:#0050b8; border-color:#0080ff; box-shadow:0 0 18px rgba(0,128,255,.5); }
+.tl-node:nth-child(3) .tl-bubble { background:#004090; border-color:#32c2ff; box-shadow:0 0 18px rgba(50,194,255,.4); }
+.tl-node:nth-child(4) .tl-bubble { background:#003880; border-color:#60a8ff; box-shadow:0 0 18px rgba(96,168,255,.3); }
+.tl-node:nth-child(5) .tl-bubble { background:#004438; border-color:#00b86a; box-shadow:0 0 18px rgba(0,184,106,.4); }
+
+.tl-text { font-size:11.5px; font-weight:700; color:rgba(255,255,255,.9); line-height:1.4; }
+.tl-en {
+  font-family:'Rajdhani',sans-serif; font-size:9px;
+  letter-spacing:1px; color:rgba(50,194,255,.5); margin-top:3px;
+}
+
+/* ─── CLOSING CARD ──────────────────────────────── */
+.closing-card {
+  background:rgba(0,55,155,.2);
+  border:1px solid rgba(0,128,255,.2);
+  border-radius:12px; padding:22px 28px;
+}
+.closing-text {
+  font-size:15px; line-height:2;
+  color:rgba(255,255,255,.82); text-align:center;
+}
+.closing-text strong { color:#32c2ff; }
+
+/* ─── FOOTER ────────────────────────────────────── */
+.poster-footer {
+  margin:0 28px 30px;
+  display:flex; justify-content:space-between; align-items:center;
+  padding-top:16px;
+  border-top:1px solid rgba(0,128,255,.2);
+}
+.footer-hashtag {
+  font-size:12.5px; font-weight:700;
+  color:rgba(50,194,255,.65);
+}
+.footer-brand {
+  display:flex; align-items:center; gap:8px;
+}
+.footer-logo { width:40px; opacity:.8; }
+.footer-name {
+  font-size:15px; font-weight:900; color:#fff;
+}
+.footer-name span { color:#0080ff; }
+</style>
+</head>
+<body>
+<div class="poster">
+
+  <!-- ═══ HERO ═══ -->
+  <div class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-dots"></div>
+
+    <!-- Decorative turbine SVGs -->
+    <svg class="deco-right" viewBox="0 0 400 400" fill="none">
+      <circle cx="200" cy="200" r="188" stroke="#0080ff" stroke-width="1.5"/>
+      <circle cx="200" cy="200" r="140" stroke="#0080ff" stroke-width="1"/>
+      <circle cx="200" cy="200" r="90"  stroke="#0080ff" stroke-width="1"/>
+      <circle cx="200" cy="200" r="45"  stroke="#32c2ff" stroke-width="1.5"/>
+      <circle cx="200" cy="200" r="16"  fill="#0080ff" opacity=".6"/>
+      <line x1="200" y1="12"  x2="200" y2="110" stroke="#0080ff" stroke-width="7" stroke-linecap="round"/>
+      <line x1="200" y1="290" x2="200" y2="388" stroke="#0080ff" stroke-width="7" stroke-linecap="round"/>
+      <line x1="12"  y1="200" x2="110" y2="200" stroke="#0080ff" stroke-width="7" stroke-linecap="round"/>
+      <line x1="290" y1="200" x2="388" y2="200" stroke="#0080ff" stroke-width="7" stroke-linecap="round"/>
+      <line x1="65"  y1="65"  x2="132" y2="132" stroke="#0080ff" stroke-width="5" stroke-linecap="round"/>
+      <line x1="268" y1="268" x2="335" y2="335" stroke="#0080ff" stroke-width="5" stroke-linecap="round"/>
+      <line x1="335" y1="65"  x2="268" y2="132" stroke="#0080ff" stroke-width="5" stroke-linecap="round"/>
+      <line x1="132" y1="268" x2="65"  y2="335" stroke="#0080ff" stroke-width="5" stroke-linecap="round"/>
+    </svg>
+
+    <svg class="deco-left" viewBox="0 0 320 320" fill="none">
+      <circle cx="160" cy="160" r="148" stroke="#00ff86" stroke-width="1"/>
+      <circle cx="160" cy="160" r="105" stroke="#00b86a" stroke-width="1"/>
+      <circle cx="160" cy="160" r="62"  stroke="#00ff86" stroke-width="1"/>
+      <circle cx="160" cy="160" r="18"  fill="#00b86a" opacity=".4"/>
+      <line x1="160" y1="12"  x2="160" y2="98"  stroke="#00ff86" stroke-width="6" stroke-linecap="round"/>
+      <line x1="160" y1="222" x2="160" y2="308" stroke="#00ff86" stroke-width="6" stroke-linecap="round"/>
+      <line x1="12"  y1="160" x2="98"  y2="160" stroke="#00ff86" stroke-width="6" stroke-linecap="round"/>
+      <line x1="222" y1="160" x2="308" y2="160" stroke="#00ff86" stroke-width="6" stroke-linecap="round"/>
+    </svg>
+
+    <!-- Year strip -->
+    <div class="year-strip">
+      <span>2</span><span>0</span><span>2</span><span>6</span>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">PREDICTIVE MAINTENANCE PLATFORM</div>
+      <img src="logo.svg" class="hero-logo-wrap" alt="NABD Logo">
+      <div class="hero-title">نبض <span>الطاقة</span></div>
+      <div class="hero-sub">منصة الصيانة التنبؤية الذكية لمحطات الطاقة</div>
+      <div class="hero-tagrow">NABD &nbsp;·&nbsp; AI-POWERED &nbsp;·&nbsp; REAL-TIME</div>
+    </div>
+  </div>
+
+  <!-- ═══ INTRO CARD ═══ -->
+  <div class="section">
+    <div class="intro-card">
+      <div class="intro-left">
+        <div class="intro-badge">AI</div>
+        <div class="intro-badge-sub">POWERED</div>
+      </div>
+      <div class="intro-sep"></div>
+      <div class="intro-right">
+        <div class="intro-title">النسخة الأولى من نوعها</div>
+        <div class="intro-title-en">FIRST OF ITS KIND</div>
+        <div class="intro-body">
+          تُتيح منصة نبض الطاقة مراقبة المعدات الصناعية في الوقت الفعلي، وتنبؤ العطل قبل وقوعها، وتحديد قطع الغيار المطلوبة، مما يُخفّض تكاليف الصيانة غير المخططة ويرفع كفاءة التشغيل إلى أعلى مستوياتها.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FEATURES STRIP ═══ -->
+  <div class="section feat-strip">
+    <div class="feat-item">
+      <span class="feat-icon">🔮</span>
+      <div class="feat-name">تنبؤ<br>بالعطل</div>
+    </div>
+    <div class="feat-item">
+      <span class="feat-icon">📊</span>
+      <div class="feat-name">تحليل<br>بيانات حي</div>
+    </div>
+    <div class="feat-item">
+      <span class="feat-icon">🔧</span>
+      <div class="feat-name">قائمة<br>قطع الغيار</div>
+    </div>
+    <div class="feat-item">
+      <span class="feat-icon">⚡</span>
+      <div class="feat-name">محاكاة<br>فورية</div>
+    </div>
+  </div>
+
+  <!-- ═══ STATS ═══ -->
+  <div class="section">
+    <div class="stats-block">
+      <div class="stats-row">
+        <div class="stat-cell">
+          <div class="stat-label">يوم من البيانات</div>
+          <div class="stat-num">28</div>
+          <div class="stat-unit">سجل تاريخي لكل حساس</div>
+        </div>
+        <div class="stat-logo-cell">
+          <img src="logo.svg" alt="NABD">
+        </div>
+        <div class="stat-cell">
+          <div class="stat-label">وحدة صناعية</div>
+          <div class="stat-num">4</div>
+          <div class="stat-unit">توربين · مولّد<br>مرجل · وقود</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-label">معدة مُراقَبة</div>
+          <div class="stat-num">12</div>
+          <div class="stat-unit">36 حساس فعلي<br>حرارة · اهتزاز · ضغط</div>
+        </div>
+      </div>
+      <div class="stats-facts">
+        <div class="stats-fact">
+          <div class="fact-dot" style="background:#00b86a"></div>
+          أول منصة صيانة تنبؤية
+        </div>
+        <div class="stats-fact">
+          <div class="fact-dot" style="background:#0080ff"></div>
+          تحديث تلقائي كل 4–6 ثوانٍ
+        </div>
+        <div class="stats-fact">
+          <div class="fact-dot" style="background:#32c2ff"></div>
+          3 مستويات تنبيه ذكية
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TIMELINE / WORKFLOW ═══ -->
+  <div class="section">
+    <div class="timeline-wrap">
+      <div class="tl-head">
+        <div class="tl-head-text">
+          <div class="t1">مسار التحليل الذكي</div>
+          <div class="t2">INTELLIGENT ANALYSIS FLOW</div>
+        </div>
+        <div class="tl-head-line"></div>
+      </div>
+
+      <div class="tl-row">
+        <div class="tl-connector"></div>
+
+        <div class="tl-node">
+          <div class="tl-bubble">📡</div>
+          <div class="tl-text">قراءة<br>الحساسات</div>
+          <div class="tl-en">SENSOR DATA</div>
+        </div>
+
+        <div class="tl-node">
+          <div class="tl-bubble">🧠</div>
+          <div class="tl-text">تحليل<br>الصحة</div>
+          <div class="tl-en">HEALTH SCORE</div>
+        </div>
+
+        <div class="tl-node">
+          <div class="tl-bubble">⚠️</div>
+          <div class="tl-text">تنبؤ<br>العطل</div>
+          <div class="tl-en">RUL PREDICTION</div>
+        </div>
+
+        <div class="tl-node">
+          <div class="tl-bubble">🔧</div>
+          <div class="tl-text">خطة<br>الصيانة</div>
+          <div class="tl-en">MAINTENANCE PLAN</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CLOSING CARD ═══ -->
+  <div class="section">
+    <div class="closing-card">
+      <div class="closing-text">
+        نبض الطاقة ليس مجرد لوحة مراقبة، بل <strong>دماغ رقمي</strong> يرصد كل اهتزازة وكل درجة حرارة وكل قراءة ضغط، ويُحوّلها إلى <strong>قرارات صيانة استباقية</strong> تحمي المعدات وتوفّر الميزانيات وتضمن <strong>استمرارية التشغيل</strong> في أعلى مستوياتها.
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FOOTER ═══ -->
+  <div class="poster-footer">
+    <div class="footer-hashtag">#نبض_الطاقة &nbsp;·&nbsp; #الصيانة_التنبؤية</div>
+    <div class="footer-brand">
+      <img src="logo.svg" class="footer-logo" alt="">
+      <div class="footer-name"><span>NABD</span> &nbsp;نبض الطاقة</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
