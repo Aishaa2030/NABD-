@@ -1117,3 +1117,118 @@ html, body {
 .prob-box:nth-child(1) { animation: boxPopIn 0.28s ease-out 0.04s both; }
 .prob-box:nth-child(2) { animation: boxPopIn 0.28s ease-out 0.11s both; }
 .prob-box:nth-child(3) { animation: boxPopIn 0.28s ease-out 0.18s both; }
+
+/* ══════════════════════════════════════════════════════════════
+   DIGITAL TWIN MAP — LIVE FLOW & HUD ANIMATIONS  (video ref)
+══════════════════════════════════════════════════════════════ */
+
+/* ── Pipe / Connection Flow ─────────────────────────────────── */
+/* SHAFT  (gold, dasharray=12,7, sum=19) — mechanical rotation feel */
+#pipe-shaft {
+  animation: pipeShaft 1.1s linear infinite;
+}
+@keyframes pipeShaft { to { stroke-dashoffset: -19; } }
+
+/* STEAM  (blue, solid → add dasharray) — fast high-pressure */
+#pipe-steam {
+  stroke-dasharray: 22, 4;
+  animation: pipeSteam 0.95s linear infinite;
+}
+@keyframes pipeSteam { to { stroke-dashoffset: -26; } }
+
+/* FUEL   (green, solid → add dasharray) — slower viscous flow */
+#pipe-fuel {
+  stroke-dasharray: 18, 6;
+  animation: pipeFuel 2.6s linear infinite;
+}
+@keyframes pipeFuel { to { stroke-dashoffset: -24; } }
+
+/* COOLING (cyan, solid → add dasharray) — medium water flow */
+#pipe-cool {
+  stroke-dasharray: 16, 4;
+  animation: pipeCool 1.6s linear infinite;
+}
+@keyframes pipeCool { to { stroke-dashoffset: -20; } }
+
+/* POWER  (red dashed, dasharray=8,5, sum=13) — fast electrical */
+#pipe-power {
+  animation: pipePower 0.60s linear infinite;
+}
+@keyframes pipePower { to { stroke-dashoffset: -13; } }
+
+/* ── HUD Corner Brackets ────────────────────────────────────── */
+.hud-corner {
+  fill: none;
+  stroke: rgba(50, 194, 255, 0.48);
+  stroke-width: 2;
+  stroke-linecap: square;
+  animation: hudCornerPulse 4s ease-in-out infinite;
+}
+
+/* Stagger each zone by 1 s */
+#hudCorners path:nth-child(n+1):nth-child(-n+4)  { animation-delay: 0s; }
+#hudCorners path:nth-child(n+5):nth-child(-n+8)  { animation-delay: 1s; }
+#hudCorners path:nth-child(n+9):nth-child(-n+12) { animation-delay: 2s; }
+#hudCorners path:nth-child(n+13)                 { animation-delay: 3s; }
+
+@keyframes hudCornerPulse {
+  0%, 100% { opacity: 0.36; }
+  50%       { opacity: 0.88; }
+}
+
+/* ── Map Scan Line (::after on map-container) ──────────────── */
+.map-container { position: relative; }
+
+.map-container::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: 0;
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(50, 194, 255, 0.12) 8%,
+    rgba(50, 194, 255, 0.65) 38%,
+    rgba(50, 194, 255, 0.65) 62%,
+    rgba(50, 194, 255, 0.12) 92%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 8px  rgba(50, 194, 255, 0.55),
+    0 0 20px rgba(50, 194, 255, 0.22);
+  pointer-events: none;
+  z-index: 5;
+  will-change: transform, opacity;
+  animation: mapScanSweep 6s ease-in-out infinite;
+}
+
+/* translateY only — GPU-composited, no Layout/Paint trigger */
+@keyframes mapScanSweep {
+  0%   { transform: translateY(-3px);   opacity: 0; }
+  4%   { transform: translateY(-3px);   opacity: 1; }
+  92%  { transform: translateY(900px);  opacity: 0.55; }
+  100% { transform: translateY(900px);  opacity: 0; }
+}
+
+/* ── Selected hotspot — pulsing outer ring ──────────────────── */
+.hotspot-group.hs-selected .hs-ring {
+  opacity: 0.75 !important;
+  stroke-width: 2.5 !important;
+  animation: selectedRingPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes selectedRingPulse {
+  0%, 100% { opacity: 0.55; }
+  50%       { opacity: 1.00; }
+}
+
+/* ── High-risk ring outer glow ──────────────────────────────── */
+.hotspot-group.hs-high .hs-ring {
+  animation: highRiskRing 2s ease-in-out infinite;
+}
+
+@keyframes highRiskRing {
+  0%, 100% { opacity: 0.18; }
+  50%       { opacity: 0.58; }
+}

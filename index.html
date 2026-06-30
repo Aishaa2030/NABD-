@@ -151,7 +151,7 @@
 
             <!-- ═══ PIPES (drawn behind buildings) ═══ -->
             <!-- STEAM: Boiler → Turbine (blue) -->
-            <polyline points="175,255 175,218 195,218 195,195"
+            <polyline id="pipe-steam" points="175,255 175,218 195,218 195,195"
                       fill="none" stroke="#5a90d0" stroke-width="7"
                       stroke-linecap="round" stroke-linejoin="round" opacity="0.75"
                       marker-end="url(#arrSteam)"/>
@@ -161,14 +161,14 @@
                   font-family="Inter" font-size="9" font-weight="600">STEAM</text>
 
             <!-- SHAFT: Turbine → Generator (gold dashed) -->
-            <line x1="336" y1="135" x2="542" y2="135"
+            <line id="pipe-shaft" x1="336" y1="135" x2="542" y2="135"
                   stroke="#c8a030" stroke-width="5" stroke-dasharray="12,7" opacity="0.8"/>
             <rect x="396" y="124" width="52" height="14" rx="3" fill="white" opacity="0.75"/>
             <text x="422" y="134" text-anchor="middle" fill="#a07820"
                   font-family="Inter" font-size="9" font-weight="600">SHAFT</text>
 
             <!-- FUEL: Fuel System → Boiler (green) -->
-            <polyline points="618,360 540,360 540,295 258,295 258,340 175,340"
+            <polyline id="pipe-fuel" points="618,360 540,360 540,295 258,295 258,340 175,340"
                       fill="none" stroke="#5aaa70" stroke-width="7"
                       stroke-linecap="round" stroke-linejoin="round" opacity="0.75"
                       marker-end="url(#arrFuel)"/>
@@ -177,13 +177,13 @@
                   font-family="Inter" font-size="9" font-weight="600">FUEL</text>
 
             <!-- COOLING: Generator → drain (cyan) -->
-            <polyline points="618,178 618,256 668,256"
+            <polyline id="pipe-cool" points="618,178 618,256 668,256"
                       fill="none" stroke="#40b8c8" stroke-width="5"
                       stroke-linecap="round" stroke-linejoin="round" opacity="0.7"
                       marker-end="url(#arrCool)"/>
 
             <!-- POWER OUT: Generator → grid (red dashed) -->
-            <line x1="762" y1="178" x2="762" y2="256"
+            <line id="pipe-power" x1="762" y1="178" x2="762" y2="256"
                   stroke="#e05040" stroke-width="4" stroke-dasharray="8,5" opacity="0.7"/>
             <rect x="766" y="206" width="44" height="14" rx="3" fill="white" opacity="0.75"/>
             <text x="788" y="216" text-anchor="middle" fill="#c03020"
@@ -420,6 +420,30 @@
               <line x1="871" y1="282" x2="871" y2="296" stroke="#9a7850" stroke-width="2"/>
               <text x="857" y="356" text-anchor="middle" fill="#5a4020"
                     font-family="Inter" font-size="8" font-weight="600">XFMR</text>
+            </g>
+
+            <!-- ═══ HUD CORNER BRACKETS (Digital Twin overlay) ═══ -->
+            <g id="hudCorners">
+              <!-- TURBINE zone  46,46 → 336,254 -->
+              <path class="hud-corner" d="M 46,62 L 46,46 L 62,46"/>
+              <path class="hud-corner" d="M 320,46 L 336,46 L 336,62"/>
+              <path class="hud-corner" d="M 46,238 L 46,254 L 62,254"/>
+              <path class="hud-corner" d="M 320,254 L 336,254 L 336,238"/>
+              <!-- GENERATOR zone  544,46 → 770,182 -->
+              <path class="hud-corner" d="M 544,62 L 544,46 L 560,46"/>
+              <path class="hud-corner" d="M 754,46 L 770,46 L 770,62"/>
+              <path class="hud-corner" d="M 544,166 L 544,182 L 560,182"/>
+              <path class="hud-corner" d="M 754,182 L 770,182 L 770,166"/>
+              <!-- BOILER zone  48,306 → 248,526 -->
+              <path class="hud-corner" d="M 48,322 L 48,306 L 64,306"/>
+              <path class="hud-corner" d="M 232,306 L 248,306 L 248,322"/>
+              <path class="hud-corner" d="M 48,510 L 48,526 L 64,526"/>
+              <path class="hud-corner" d="M 232,526 L 248,526 L 248,510"/>
+              <!-- FUEL SYSTEM zone  544,296 → 870,532 -->
+              <path class="hud-corner" d="M 544,312 L 544,296 L 560,296"/>
+              <path class="hud-corner" d="M 854,296 L 870,296 L 870,312"/>
+              <path class="hud-corner" d="M 544,516 L 544,532 L 560,532"/>
+              <path class="hud-corner" d="M 854,532 L 870,532 L 870,516"/>
             </g>
 
             <!-- ═══ HOTSPOTS (top layer, always visible) ═══ -->
