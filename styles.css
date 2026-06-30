@@ -716,19 +716,30 @@ html, body {
 }
 
 /* ── HIGH-RISK ALERT ANIMATION ──────────────────────────────── */
-@keyframes alertPulse {
-  0%, 100% { background: var(--bg); }
-  50%       { background: rgba(220,38,38,.08); box-shadow: inset 0 0 14px rgba(220,38,38,.18); }
+@keyframes alertGlow {
+  0%, 100% {
+    background: var(--bg);
+    box-shadow: none;
+  }
+  30% {
+    background: rgba(220,38,38,.12);
+    box-shadow: 0 0 0 2px rgba(220,38,38,.4),
+                inset 0 0 18px rgba(220,38,38,.18);
+  }
+  65% {
+    background: rgba(220,38,38,.05);
+    box-shadow: 0 0 0 1px rgba(220,38,38,.18);
+  }
 }
 @keyframes alertFlicker {
   0%, 88%, 100% { opacity: 1; }
-  44%            { opacity: .5; }
+  44%            { opacity: .55; }
 }
 
 .alert-new {
   animation:
-    alertPulse   .8s ease-in-out 4,
-    alertFlicker .8s ease-in-out 4;
+    alertGlow    0.9s ease-in-out 4,
+    alertFlicker 0.9s ease-in-out 4;
 }
 
 /* ── MISC ───────────────────────────────────────────────────── */
@@ -1031,3 +1042,78 @@ html, body {
 .action-body    { flex: 1; }
 .action-text    { font-size: 11.5px; font-weight: 600; color: var(--text); line-height: 1.4; }
 .action-when    { font-size: 10px; color: var(--text-sec); margin-top: 2px; }
+
+/* ================================================================
+   DIGITAL TWIN ANIMATIONS — Inspired by industrial dashboard motion
+   (slide-in panels · number entrance · bar grow · pulsing values)
+   ================================================================ */
+
+/* ── Detail panel slide-in (on new asset selection only) ──── */
+@keyframes panelSlideIn {
+  from { opacity: 0; transform: translateX(18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.detail-content.is-entering {
+  animation: panelSlideIn 0.34s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+/* ── Sensor value row fade on each tick re-render ─────────── */
+@keyframes valFadeIn {
+  from { opacity: 0.3; }
+  to   { opacity: 1; }
+}
+
+.sensor-val-row {
+  animation: valFadeIn 0.45s ease-out both;
+}
+
+/* ── Numeric KPI entrance (health %, RUL, prediction) ─────── */
+@keyframes numIn {
+  from { opacity: 0.35; transform: scale(0.92); }
+  to   { opacity: 1;    transform: scale(1); }
+}
+
+.health-value {
+  display: inline-block;
+  animation: numIn 0.42s ease-out both;
+}
+
+.pred-days   { animation: numIn 0.5s  ease-out both; }
+.rul-days-val{ animation: numIn 0.38s ease-out both; }
+
+/* ── Chart current value flash on update ──────────────────── */
+@keyframes chartFlash {
+  from { opacity: 0.4; }
+  to   { opacity: 1; }
+}
+
+.chart-current { animation: chartFlash 0.5s ease-out both; }
+
+/* ── Health & RUL bars grow from left on entry ────────────── */
+@keyframes barGrow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.health-bar-fill {
+  transform-origin: left center;
+  animation: barGrow 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  transition: none;
+}
+
+.rul-bar-fill {
+  transform-origin: left center;
+  animation: barGrow 0.62s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  transition: none;
+}
+
+/* ── Failure probability boxes pop in staggered ───────────── */
+@keyframes boxPopIn {
+  from { opacity: 0; transform: scale(0.82); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.prob-box:nth-child(1) { animation: boxPopIn 0.28s ease-out 0.04s both; }
+.prob-box:nth-child(2) { animation: boxPopIn 0.28s ease-out 0.11s both; }
+.prob-box:nth-child(3) { animation: boxPopIn 0.28s ease-out 0.18s both; }

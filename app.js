@@ -119,6 +119,7 @@ const openUnits  = new Set();
 let selectedUnit  = null;
 let selectedEqId  = null;
 let activeTab     = 'diag';   // 'diag' | 'analytics'
+let _pendingEntry = false;     // true → next renderDetail plays slide-in
 
 // ================================================================
 // HELPERS
@@ -656,6 +657,9 @@ function renderDetail(eq) {
   const content = document.getElementById('detailContent');
   content.classList.remove('hidden');
 
+  const doEntry = _pendingEntry;
+  _pendingEntry = false;
+
   content.innerHTML = `
     <div class="detail-header">
       <div class="detail-eq-name">${eq.nameEn}</div>
@@ -697,6 +701,15 @@ function renderDetail(eq) {
          style="${activeTab === 'maintenance' ? '' : 'display:none'}">
       ${maintenanceHTML(eq)}
     </div>`;
+
+  if (doEntry) {
+    content.classList.remove('is-entering');
+    void content.offsetWidth;
+    content.classList.add('is-entering');
+    content.addEventListener('animationend', () => {
+      content.classList.remove('is-entering');
+    }, { once: true });
+  }
 }
 
 // ================================================================
@@ -727,7 +740,10 @@ function selectEquipment(uid, eid) {
   renderUnits();
   updateHotspots();
   const eq = getEq(uid, eid);
-  if (eq) renderDetail(eq);
+  if (eq) {
+    _pendingEntry = true;
+    renderDetail(eq);
+  }
 }
 
 function initEvents() {
