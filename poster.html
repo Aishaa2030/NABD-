@@ -3,464 +3,409 @@
 <head>
 <meta charset="UTF-8">
 <title>نبض الطاقة — Poster</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 
-/* ──────────────────────────────────────────────────────────────
-   RESET + PAGE SETUP
-────────────────────────────────────────────────────────────── */
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+/* ── RESET + PRINT ────────────────────────────────── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+@page { size: 170mm 240mm portrait; margin:0; }
+body { background:#040a1e; display:flex; justify-content:center; padding:20px 0; font-family:'Cairo',sans-serif; }
+@media print { body{padding:0;} .poster{-webkit-print-color-adjust:exact;print-color-adjust:exact;} }
 
-@page { size: A4 portrait; margin: 0; }
-
-body {
-  background: #080c1e;
-  display: flex;
-  justify-content: center;
-  padding: 24px 0;
-  font-family: 'Cairo', sans-serif;
-}
-
-@media print {
-  body { padding: 0; background: #000; }
-  .poster { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-}
-
-/* ──────────────────────────────────────────────────────────────
-   POSTER SHELL  — A4 portrait (210 × 297 mm)
-────────────────────────────────────────────────────────────── */
+/* ── POSTER SHELL  170 × 240 mm ──────────────────── */
 .poster {
-  width:  210mm;
-  height: 297mm;
-  position: relative;
-  overflow: hidden;
-  background: #02040f;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
+  width:170mm; height:240mm;
+  position:relative; overflow:hidden;
+  background:#03061a;
+  color:#e8f4ff;
+  display:flex; flex-direction:column;
 }
 
-/* ── BG LAYER 1 : photo ── */
+/* ── BACKGROUND layers ───────────────────────────── */
 .bg-photo {
-  position: absolute; inset: 0; z-index: 0;
-  background: url('Image/vi/caver.jpeg') center 22% / cover no-repeat;
-  filter: brightness(.65) saturate(.75);
+  position:absolute; inset:0; z-index:0;
+  background:url('Image/vi/caver.jpeg') center 20% / cover no-repeat;
+  opacity:.08;
 }
-
-/* ── BG LAYER 2 : gradient that kills the bottom ── */
-.bg-fade {
-  position: absolute; inset: 0; z-index: 1;
-  background: linear-gradient(
-    to bottom,
-    rgba(4,8,28,.38)   0%,
-    rgba(6,12,36,.48)  22%,
-    rgba(5,10,32,.62)  38%,
-    rgba(3,7,22,.82)   52%,
-    rgba(2,5,16,.97)   66%,
-    rgba(2,5,16,1.00)  78%
-  );
-}
-
-/* ── BG LAYER 3 : color glow blobs ── */
-.bg-glow {
-  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+.bg-grad {
+  position:absolute; inset:0; z-index:1;
   background:
-    radial-gradient(ellipse 100% 52% at 50% 25%, rgba(60,30,180,.30) 0%, transparent 68%),
-    radial-gradient(ellipse 55% 28% at 12% 40%, rgba(0,80,255,.18) 0%, transparent 62%),
-    radial-gradient(ellipse 50% 24% at 88% 35%, rgba(0,160,255,.14) 0%, transparent 58%),
-    radial-gradient(ellipse 65% 22% at 50% 95%, rgba(0,50,170,.22) 0%, transparent 60%);
+    radial-gradient(ellipse 80% 40% at 50% 0%,   rgba(0,80,200,.30) 0%, transparent 70%),
+    radial-gradient(ellipse 55% 30% at 10% 55%,  rgba(0,40,180,.20) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 25% at 90% 40%,  rgba(0,120,255,.14) 0%, transparent 60%),
+    linear-gradient(to bottom, rgba(3,6,26,.55) 0%, rgba(2,4,18,.85) 60%, rgba(2,4,18,1) 100%);
 }
-
-/* ── BG LAYER 4 : tech grid ── */
 .bg-grid {
-  position: absolute; inset: 0; z-index: 3; pointer-events: none;
-  opacity: .038;
+  position:absolute; inset:0; z-index:2; pointer-events:none; opacity:.028;
   background:
-    linear-gradient(rgba(80,140,255,1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(80,140,255,1) 1px, transparent 1px);
-  background-size: 26px 26px;
+    linear-gradient(rgba(0,200,255,1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,200,255,1) 1px, transparent 1px);
+  background-size:22px 22px;
 }
 
-/* ── all real content above ── */
+/* ── ALL CONTENT (above bg) ─────────────────────── */
 .content {
-  position: relative; z-index: 10;
-  display: flex; flex-direction: column;
-  height: 100%;
+  position:relative; z-index:10;
+  display:flex; flex-direction:column;
+  height:100%; padding:0 16px;
 }
 
-/* ──────────────────────────────────────────────────────────────
-   01  TOP BAR
-────────────────────────────────────────────────────────────── */
-.top-bar {
-  display: flex; justify-content: space-between; align-items: flex-start;
-  padding: 16px 22px 0;
-  flex-shrink: 0;
+/* ─────────────────────────────────────────────────
+   01  HEADER
+───────────────────────────────────────────────── */
+.header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:11px 0 9px;
+  border-bottom:1px solid rgba(0,180,255,.15);
+  flex-shrink:0;
+}
+.logo-row { display:flex; align-items:center; gap:8px; }
+.logo-img  { width:32px; height:32px; object-fit:contain; filter:drop-shadow(0 0 8px rgba(0,150,255,.9)); }
+.logo-name { font-family:'Rajdhani',sans-serif; font-size:18px; font-weight:700; color:#fff; letter-spacing:1.5px; }
+.logo-name span { color:#00c8ff; }
+.header-tag {
+  font-family:'Rajdhani',sans-serif; font-size:8px; font-weight:600;
+  color:rgba(0,200,255,.55); letter-spacing:3px; text-transform:uppercase;
 }
 
-.logo-group { display: flex; align-items: center; gap: 10px; }
-
-.logo-img {
-  width: 44px; height: 44px; object-fit: contain;
-  filter: drop-shadow(0 0 12px rgba(0,128,255,.8));
-}
-
-.logo-stack { display: flex; flex-direction: column; line-height: 1; }
-
-.logo-en {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 19px; font-weight: 700; letter-spacing: 3.5px; color: #fff;
-}
-
-.logo-sub {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 7.5px; letter-spacing: 3px; color: rgba(50,194,255,.58);
-  margin-top: 4px;
-}
-
-.year-track {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 12px; font-weight: 700; letter-spacing: 4px;
-  color: rgba(100,170,255,.50);
-  writing-mode: vertical-rl; line-height: 1.5;
-}
-
-/* ──────────────────────────────────────────────────────────────
-   02  INTRO DESCRIPTION BOX
-────────────────────────────────────────────────────────────── */
-.intro-box {
-  margin: 14px 22px 0;
-  padding: 12px 20px;
-  background: rgba(8,20,70,.55);
-  border: 1px solid rgba(60,120,255,.22);
-  border-radius: 12px;
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  flex-shrink: 0;
-}
-
-.intro-text {
-  font-size: 11px; line-height: 2; color: rgba(255,255,255,.80);
-  text-align: center; font-weight: 400;
-}
-
-/* ──────────────────────────────────────────────────────────────
-   03  MAIN TITLE  (hero)
-────────────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────
+   02  HERO
+───────────────────────────────────────────────── */
 .hero {
-  flex: 1; min-height: 0;
-  display: flex; align-items: center; justify-content: center;
-  padding: 12px 20px 0;
-  position: relative;
+  display:flex; flex-direction:column; align-items:center;
+  padding:10px 0 8px; flex-shrink:0;
+  position:relative;
 }
-
-/* Soft glow halo behind text */
 .hero::before {
-  content: '';
-  position: absolute; width: 260px; height: 200px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(40,80,220,.22) 0%, transparent 70%);
-  filter: blur(22px);
-  pointer-events: none;
+  content:''; position:absolute;
+  width:220px; height:70px; top:0; left:50%; transform:translateX(-50%);
+  background:radial-gradient(ellipse, rgba(0,100,255,.25) 0%, transparent 70%);
+  filter:blur(14px); pointer-events:none;
+}
+.hero-title {
+  font-size:50px; font-weight:900; line-height:.88;
+  text-align:center; position:relative; z-index:1;
+}
+.hero-w1 {
+  display:block; color:#fff;
+  text-shadow:0 0 22px rgba(100,160,255,.9), 0 0 55px rgba(0,80,255,.45), 0 4px 20px rgba(0,0,0,.95);
+  letter-spacing:-1px;
+}
+.hero-w2 {
+  display:block; color:#00c8ff;
+  text-shadow:0 0 18px rgba(0,200,255,1), 0 0 45px rgba(0,200,255,.7), 0 0 90px rgba(0,160,255,.35), 0 5px 25px rgba(0,0,0,.98);
+  letter-spacing:-1.5px;
+}
+.hero-sub {
+  font-family:'Rajdhani',sans-serif; font-size:8px; font-weight:600;
+  letter-spacing:5px; color:rgba(0,200,255,.50); text-transform:uppercase;
+  margin-top:6px;
 }
 
-.title-block { text-align: center; position: relative; z-index: 1; }
+/* thin separator */
+.sep {
+  display:flex; align-items:center; gap:8px; margin:6px 0;
+  flex-shrink:0;
+}
+.sep-line   { flex:1; height:1px; background:linear-gradient(to left, rgba(0,180,255,.22), transparent); }
+.sep-line.r { background:linear-gradient(to right, rgba(0,180,255,.22), transparent); }
+.sep-label {
+  font-size:8.5px; font-weight:700; color:rgba(0,200,255,.65);
+  letter-spacing:1px; white-space:nowrap;
+  padding:2px 10px;
+  border:1px solid rgba(0,180,255,.20);
+  border-radius:20px;
+  background:rgba(0,30,100,.30);
+}
+.sep-sm { margin:6px 0 5px; }
 
-.t1 {
-  display: block;
-  font-size: 78px; font-weight: 900; line-height: .86;
-  letter-spacing: -2px; color: #fff;
-  text-shadow:
-    0 0 28px rgba(80,140,255,.95),
-    0 0 65px rgba(60,100,255,.55),
-    0 0 110px rgba(0,80,255,.28),
-    0 5px 24px rgba(0,0,0,.92);
+/* ─────────────────────────────────────────────────
+   03  PROBLEMS
+───────────────────────────────────────────────── */
+.section-label {
+  display:flex; align-items:center; gap:6px;
+  font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:2px;
+  flex-shrink:0; margin-bottom:5px;
+}
+.sl-red  { color:#ff4f4f; }
+.sl-cyan { color:#00c8ff; }
+.sl-gold { color:#f0a500; }
+
+.problems-grid {
+  display:flex; flex-direction:column; gap:5px;
+  flex-shrink:0;
 }
 
-.t2 {
-  display: block;
-  font-size: 100px; font-weight: 900; line-height: .84;
-  letter-spacing: -3.5px; color: #32c2ff;
-  text-shadow:
-    0 0 22px rgba(50,194,255,1.00),
-    0 0 50px rgba(50,194,255,.78),
-    0 0 95px rgba(0,150,255,.48),
-    0 6px 30px rgba(0,0,0,.96);
+.prob-card {
+  display:flex; align-items:center; gap:10px;
+  padding:7px 12px;
+  background:rgba(80,10,10,.38);
+  border:1px solid rgba(220,50,50,.25);
+  border-right:3px solid rgba(220,50,50,.80);
+  border-radius:8px;
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+}
+.prob-num {
+  font-family:'Rajdhani',sans-serif; font-size:20px; font-weight:700;
+  color:rgba(255,80,80,.70); line-height:1; min-width:24px;
+}
+.prob-body { display:flex; flex-direction:column; gap:1px; }
+.prob-title { font-size:10px; font-weight:700; color:#ffcccc; }
+.prob-desc  { font-size:8.5px; font-weight:400; color:rgba(255,200,200,.60); line-height:1.5; }
+
+/* ─────────────────────────────────────────────────
+   04  SOLUTION
+───────────────────────────────────────────────── */
+.solutions-grid {
+  display:flex; flex-direction:column; gap:4px;
+  flex-shrink:0;
 }
 
-.t-sub {
-  display: block; margin-top: 11px;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 10px; font-weight: 600;
-  letter-spacing: 7.5px; color: rgba(50,194,255,.52);
-  text-transform: uppercase;
+.sol-card {
+  display:flex; align-items:center; gap:10px;
+  padding:7px 12px;
+  background:rgba(0,30,80,.40);
+  border:1px solid rgba(0,150,255,.22);
+  border-right:3px solid rgba(0,200,255,.70);
+  border-radius:8px;
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
 }
-
-/* ──────────────────────────────────────────────────────────────
-   04  "أبرز المؤشرات"  PILL
-────────────────────────────────────────────────────────────── */
-.pill-row {
-  display: flex; justify-content: center;
-  margin: 14px 0 12px; flex-shrink: 0;
+.sol-icon-box {
+  width:28px; height:28px; min-width:28px;
+  border-radius:7px;
+  background:rgba(0,100,200,.28);
+  border:1px solid rgba(0,180,255,.28);
+  display:flex; align-items:center; justify-content:center;
+  font-size:13px;
 }
+.sol-body { display:flex; flex-direction:column; gap:1px; }
+.sol-title { font-size:10px; font-weight:700; color:#cce8ff; }
+.sol-desc  { font-size:8.5px; font-weight:400; color:rgba(180,220,255,.60); line-height:1.5; }
 
-.pill {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 5px 22px;
-  background: rgba(0,50,150,.42);
-  border: 1px solid rgba(50,194,255,.32);
-  border-radius: 40px;
-  font-size: 11.5px; font-weight: 700;
-  color: rgba(50,194,255,.90);
-  letter-spacing: 1px;
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 0 18px rgba(0,80,255,.14), inset 0 1px 0 rgba(255,255,255,.06);
-}
-
-.p-dot {
-  width: 5px; height: 5px; border-radius: 50%;
-  background: #32c2ff;
-  box-shadow: 0 0 8px rgba(50,194,255,.9), 0 0 16px rgba(50,194,255,.4);
-}
-
-/* ──────────────────────────────────────────────────────────────
-   05  STATS  2 × 2 GRID
-────────────────────────────────────────────────────────────── */
-/* wrapper holds absolute sparkle corners */
-.stats-outer {
-  position: relative;
-  padding: 0 22px;
-  flex-shrink: 0;
-}
-
-/* 4-pointed ✦ star placed at the 4 outer corners of the grid */
-.sp { position: absolute; width: 22px; height: 22px; }
-
-.sp svg { width: 100%; height: 100%; }
-
-/* RTL page: physical right = visual start (right), physical left = visual end (left) */
-.sp-a { top: -10px;   right: -4px;  }   /* outer top-right   */
-.sp-b { top: -10px;   left:  -4px;  }   /* outer top-left    */
-.sp-c { bottom: -10px; right: -4px; }   /* outer bottom-right */
-.sp-d { bottom: -10px; left:  -4px; }   /* outer bottom-left  */
-
+/* ─────────────────────────────────────────────────
+   05  NUMBERS
+───────────────────────────────────────────────── */
 .stats-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:6px; flex-shrink:0;
 }
 
-/* individual card */
-.s-card {
-  padding: 18px 18px 16px;
-  background: rgba(6,18,68,.52);
-  border: 1px solid rgba(60,120,255,.28);
-  border-radius: 20px;
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  box-shadow:
-    0 8px 32px rgba(0,30,120,.28),
-    inset 0 1px 0 rgba(255,255,255,.07),
-    inset 0 0 0 0.5px rgba(100,160,255,.10);
-  position: relative;
-  overflow: hidden;
+.stat-card {
+  padding:10px 12px;
+  background:rgba(0,20,60,.45);
+  border:1px solid rgba(0,150,255,.22);
+  border-radius:10px;
+  -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+  position:relative; overflow:hidden;
 }
-
-/* Subtle gradient shimmer inside card */
-.s-card::before {
-  content: ''; position: absolute;
-  inset: 0; border-radius: 20px;
-  background: linear-gradient(135deg, rgba(100,160,255,.06) 0%, transparent 60%);
-  pointer-events: none;
+.stat-card::before {
+  content:''; position:absolute; top:0; right:0; width:40%; height:1px;
+  background:linear-gradient(to left, rgba(0,200,255,.55), transparent);
 }
-
-/* Bottom accent line */
-.s-card::after {
-  content: ''; display: block;
-  width: 40px; height: 1.5px;
-  margin: 7px 0 0;
-  background: linear-gradient(90deg, #32c2ff 0%, transparent 100%);
-  border-radius: 2px;
+.stat-num {
+  font-family:'Rajdhani',sans-serif; font-size:34px; font-weight:700;
+  color:#fff; line-height:1;
+  text-shadow:0 0 16px rgba(0,200,255,.40);
 }
+.stat-unit { font-size:18px; font-weight:500; color:#00c8ff; }
+.stat-label { font-size:8px; font-weight:600; color:rgba(120,180,255,.78); margin-top:3px; line-height:1.5; }
 
-.s-num {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 52px; font-weight: 700; line-height: 1;
-  color: #fff;
-  text-shadow: 0 0 20px rgba(50,194,255,.42);
-  position: relative; z-index: 1;
+.stat-card:nth-child(even) .stat-num  { color:#00c8ff; text-shadow:0 0 20px rgba(0,200,255,.80); }
+.stat-card:nth-child(even) .stat-unit { color:#fff; }
+
+/* ─────────────────────────────────────────────────
+   06  GOAL BANNER
+───────────────────────────────────────────────── */
+.goal-box {
+  padding:9px 14px;
+  background:rgba(0,40,120,.32);
+  border:1px solid rgba(0,160,255,.20);
+  border-radius:10px;
+  -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+  flex-shrink:0;
+  display:flex; align-items:flex-start; gap:9px;
 }
+.goal-icon { font-size:18px; line-height:1; margin-top:1px; }
+.goal-body { display:flex; flex-direction:column; gap:2px; }
+.goal-title { font-size:9.5px; font-weight:700; color:#f0c040; letter-spacing:.5px; }
+.goal-text  { font-size:8.5px; color:rgba(200,225,255,.72); line-height:1.7; }
 
-.s-label {
-  font-size: 11px; font-weight: 600;
-  color: rgba(110,180,255,.82);
-  line-height: 1.5; margin-top: 3px;
-  position: relative; z-index: 1;
-}
-
-.s-unit {
-  font-size: 30px;
-  font-family: 'Rajdhani', sans-serif;
-  font-weight: 600;
-}
-
-/* per-card accent colour */
-.s-card:nth-child(2) .s-num { color: #32c2ff; text-shadow: 0 0 24px rgba(50,194,255,.85); }
-.s-card:nth-child(4) .s-num { color: #32c2ff; text-shadow: 0 0 24px rgba(50,194,255,.85); }
-
-/* ──────────────────────────────────────────────────────────────
-   06  BOTTOM DESCRIPTION
-────────────────────────────────────────────────────────────── */
-.desc-box {
-  margin: 14px 22px 12px;
-  padding: 11px 18px;
-  background: rgba(4,14,52,.48);
-  border: 1px solid rgba(40,90,200,.18);
-  border-radius: 11px;
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  flex-shrink: 0;
-}
-
-.desc-text {
-  font-size: 11px; line-height: 2;
-  color: rgba(255,255,255,.68);
-  text-align: center;
-}
-
-/* ──────────────────────────────────────────────────────────────
+/* ─────────────────────────────────────────────────
    07  FOOTER
-────────────────────────────────────────────────────────────── */
+───────────────────────────────────────────────── */
 .footer {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 9px 22px 15px;
-  border-top: 1px solid rgba(50,194,255,.09);
-  flex-shrink: 0;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:7px 0 10px;
+  border-top:1px solid rgba(0,180,255,.10);
+  margin-top:auto; flex-shrink:0;
 }
-
 .footer-hash {
-  font-size: 9.5px; font-weight: 700;
-  color: rgba(50,194,255,.38); letter-spacing: .5px;
+  font-size:7.5px; font-weight:700;
+  color:rgba(0,200,255,.36); letter-spacing:.5px;
 }
-
-.footer-brand { display: flex; align-items: center; gap: 8px; }
-
-.footer-logo {
-  width: 25px; opacity: .72;
-  filter: drop-shadow(0 0 7px rgba(0,128,255,.45));
+.footer-brand {
+  font-family:'Rajdhani',sans-serif;
+  font-size:11px; font-weight:700;
+  color:rgba(255,255,255,.80); letter-spacing:1px;
 }
-
-.footer-name {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 14px; font-weight: 700;
-  color: rgba(255,255,255,.86); letter-spacing: 1px;
-}
-.footer-name b { color: #0080ff; font-weight: 700; }
+.footer-brand b { color:#00c8ff; }
 
 </style>
 </head>
 <body>
 <div class="poster">
 
-  <!-- ── Background ── -->
   <div class="bg-photo"></div>
-  <div class="bg-fade"></div>
-  <div class="bg-glow"></div>
+  <div class="bg-grad"></div>
   <div class="bg-grid"></div>
 
-  <!-- ══ CONTENT ══ -->
   <div class="content">
 
-    <!-- 01 TOP BAR -->
-    <div class="top-bar">
-      <div class="logo-group">
+    <!-- 01 HEADER -->
+    <div class="header">
+      <div class="logo-row">
         <img src="logo.svg" class="logo-img" alt="NABD">
-        <div class="logo-stack">
-          <span class="logo-en">NABD</span>
-          <span class="logo-sub">ENERGY INTELLIGENCE · نبض</span>
-        </div>
+        <div class="logo-name">NAB<span>D</span> &nbsp;نبض الطاقة</div>
       </div>
-      <div class="year-track">2<br>0<br>2<br>6</div>
+      <div class="header-tag">Predictive&nbsp;Maintenance&nbsp;·&nbsp;2026</div>
     </div>
 
-    <!-- 02 INTRO BOX -->
-    <div class="intro-box">
-      <p class="intro-text">
-        أحد أبرز منصات الذكاء الاصطناعي الصناعي في الخليج — نقلة نوعية في
-        الصيانة التنبؤية لمحطات الطاقة، بما يتوافق مع رؤية المملكة ٢٠٣٠
-      </p>
-    </div>
-
-    <!-- 03 HERO TITLE -->
+    <!-- 02 HERO -->
     <div class="hero">
-      <div class="title-block">
-        <span class="t1">نبـــض</span>
-        <span class="t2">الطاقـة</span>
-        <span class="t-sub">Predictive Maintenance Platform</span>
+      <div class="hero-title">
+        <span class="hero-w1">نبـض</span>
+        <span class="hero-w2">الطاقـة</span>
+      </div>
+      <div class="hero-sub">منصة الصيانة التنبؤية الذكية لمحطات الطاقة</div>
+    </div>
+
+    <div class="sep">
+      <div class="sep-line r"></div>
+      <div class="sep-label">المشكلة</div>
+      <div class="sep-line"></div>
+    </div>
+
+    <!-- 03 PROBLEMS -->
+    <div class="section-label sl-red">
+      <span>⚠</span><span>العوائق الحالية في محطات الطاقة</span>
+    </div>
+    <div class="problems-grid">
+
+      <div class="prob-card">
+        <div class="prob-num">01</div>
+        <div class="prob-body">
+          <div class="prob-title">التوقف المفاجئ غير المتوقع</div>
+          <div class="prob-desc">أعطال مباغتة تُعطّل الإنتاج وتُكبّد المحطة خسائر تشغيلية فادحة</div>
+        </div>
+      </div>
+
+      <div class="prob-card">
+        <div class="prob-num">02</div>
+        <div class="prob-body">
+          <div class="prob-title">ارتفاع تكاليف الصيانة الطارئة</div>
+          <div class="prob-desc">صيانة تفاعلية بدون تخطيط ترفع التكلفة حتى 3 أضعاف المجدولة</div>
+        </div>
+      </div>
+
+      <div class="prob-card">
+        <div class="prob-num">03</div>
+        <div class="prob-body">
+          <div class="prob-title">غياب الرؤية التحليلية الآنية</div>
+          <div class="prob-desc">قرارات مبنية على الحدس لا البيانات، دون أنظمة تشخيص ذكي</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="sep sep-sm">
+      <div class="sep-line r"></div>
+      <div class="sep-label">الحل</div>
+      <div class="sep-line"></div>
+    </div>
+
+    <!-- 04 SOLUTION -->
+    <div class="section-label sl-cyan">
+      <span>◎</span><span>ماذا يقدم نبض الطاقة ؟</span>
+    </div>
+    <div class="solutions-grid">
+
+      <div class="sol-card">
+        <div class="sol-icon-box">📡</div>
+        <div class="sol-body">
+          <div class="sol-title">مراقبة الأصول لحظةً بلحظة</div>
+          <div class="sol-desc">رصد مستمر 24/7 لجميع أصول المحطة مع لوحة تحكم تفاعلية فورية</div>
+        </div>
+      </div>
+
+      <div class="sol-card">
+        <div class="sol-icon-box">🧠</div>
+        <div class="sol-body">
+          <div class="sol-title">توقع الأعطال قبل وقوعها</div>
+          <div class="sol-desc">نماذج ذكاء اصطناعي تُنبّه الفريق قبل العطل بأيام أو أسابيع</div>
+        </div>
+      </div>
+
+      <div class="sol-card">
+        <div class="sol-icon-box">⚡</div>
+        <div class="sol-body">
+          <div class="sol-title">قرارات مدعومة بالبيانات</div>
+          <div class="sol-desc">تقارير RUL وتشخيص ذكي يمنح المهندس صورة كاملة عن صحة الأصول</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="sep sep-sm">
+      <div class="sep-line r"></div>
+      <div class="sep-label">الأرقام</div>
+      <div class="sep-line"></div>
+    </div>
+
+    <!-- 05 NUMBERS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num">99.9<span class="stat-unit">%</span></div>
+        <div class="stat-label">استمرارية تشغيل الأصول</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">65<span class="stat-unit">%</span></div>
+        <div class="stat-label">تقليل وقت التوقف المفاجئ</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">3<span class="stat-unit">×</span></div>
+        <div class="stat-label">خفض تكلفة الصيانة الطارئة</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">98<span class="stat-unit">%</span></div>
+        <div class="stat-label">دقة التشخيص التنبؤي</div>
       </div>
     </div>
 
-    <!-- 04 PILL -->
-    <div class="pill-row">
-      <div class="pill">
-        <span class="p-dot"></span>
-        أبرز المؤشرات
-        <span class="p-dot"></span>
-      </div>
+    <div class="sep sep-sm">
+      <div class="sep-line r"></div>
+      <div class="sep-label">الهدف</div>
+      <div class="sep-line"></div>
     </div>
 
-    <!-- 05 STATS GRID -->
-    <div class="stats-outer">
-
-      <!-- Corner sparkles -->
-      <svg class="sp sp-a" viewBox="0 0 22 22" fill="none"><path d="M11 0L12.6 8.4L22 11L12.6 13.6L11 22L9.4 13.6L0 11L9.4 8.4Z" fill="#32c2ff" opacity=".72"/></svg>
-      <svg class="sp sp-b" viewBox="0 0 22 22" fill="none"><path d="M11 0L12.6 8.4L22 11L12.6 13.6L11 22L9.4 13.6L0 11L9.4 8.4Z" fill="#32c2ff" opacity=".72"/></svg>
-      <svg class="sp sp-c" viewBox="0 0 22 22" fill="none"><path d="M11 0L12.6 8.4L22 11L12.6 13.6L11 22L9.4 13.6L0 11L9.4 8.4Z" fill="#32c2ff" opacity=".40"/></svg>
-      <svg class="sp sp-d" viewBox="0 0 22 22" fill="none"><path d="M11 0L12.6 8.4L22 11L12.6 13.6L11 22L9.4 13.6L0 11L9.4 8.4Z" fill="#32c2ff" opacity=".40"/></svg>
-
-      <div class="stats-grid">
-
-        <div class="s-card">
-          <div class="s-num">99.9<span class="s-unit">%</span></div>
-          <div class="s-label">استمرارية تشغيل الأصول</div>
+    <!-- 06 GOAL -->
+    <div class="goal-box">
+      <div class="goal-icon">🎯</div>
+      <div class="goal-body">
+        <div class="goal-title">هدفنا الاستراتيجي — رؤية ٢٠٣٠</div>
+        <div class="goal-text">
+          تمكين محطات الطاقة السعودية من تبنّي الصيانة الذكية لضمان بنية تحتية
+          طاقوية مستدامة وموثوقة تدعم مسيرة التحول الصناعي ورؤية المملكة ٢٠٣٠
         </div>
-
-        <div class="s-card">
-          <div class="s-num">65<span class="s-unit">%</span></div>
-          <div class="s-label">تقليل وقت التوقف المفاجئ</div>
-        </div>
-
-        <div class="s-card">
-          <div class="s-num">3<span class="s-unit">×</span></div>
-          <div class="s-label">خفض تكلفة الصيانة الطارئة</div>
-        </div>
-
-        <div class="s-card">
-          <div class="s-num">98<span class="s-unit">%</span></div>
-          <div class="s-label">موثوقية التشخيص التنبؤي</div>
-        </div>
-
       </div>
-    </div><!-- /stats-outer -->
-
-    <!-- 06 DESCRIPTION -->
-    <div class="desc-box">
-      <p class="desc-text">
-        منصة ذكية تراقب أصول الطاقة في الوقت الحقيقي، تتنبأ بالأعطال قبل حدوثها،
-        وتحافظ على استمرارية التشغيل بأقل تكلفة وأعلى كفاءة تشغيلية
-      </p>
     </div>
 
     <!-- 07 FOOTER -->
     <div class="footer">
-      <div class="footer-hash">#نبض_الطاقة &nbsp;·&nbsp; #الصيانة_التنبؤية</div>
-      <div class="footer-brand">
-        <img src="logo.svg" class="footer-logo" alt="">
-        <div class="footer-name"><b>NABD</b> &nbsp;نبض الطاقة</div>
-      </div>
+      <div class="footer-hash">#نبض_الطاقة &nbsp;·&nbsp; #رؤية٢٠٣٠ &nbsp;·&nbsp; #الصيانة_التنبؤية</div>
+      <div class="footer-brand"><b>NABD</b> نبض</div>
     </div>
 
-  </div><!-- /content -->
-</div><!-- /poster -->
+  </div>
+</div>
 </body>
 </html>

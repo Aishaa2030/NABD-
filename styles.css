@@ -1232,3 +1232,142 @@ html, body {
   0%, 100% { opacity: 0.18; }
   50%       { opacity: 0.58; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   DARK HUD THEME  —  Digital Twin Style  (video reference)
+   Overrides light theme variables + panel backgrounds
+══════════════════════════════════════════════════════════════ */
+
+/* ── CSS variable overrides ────────────────────────────────── */
+:root {
+  --bg:        #030818;
+  --surface:   #040c20;
+  --card:      #050f28;
+  --border:    rgba(0, 180, 255, 0.18);
+  --border-lt: rgba(0, 150, 255, 0.10);
+  --text:      #c8e2ff;
+  --text-sec:  #6898c8;
+  --text-mut:  #3a6898;
+  --blue:      #00c8ff;
+  --cyan:      #00c8ff;
+  --green:     #00d07a;
+  --green-bg:  rgba(0, 80, 50, 0.28);
+  --amber:     #f0a020;
+  --amber-bg:  rgba(100, 60, 0, 0.25);
+  --red:       #ff4a4a;
+  --red-bg:    rgba(80, 10, 10, 0.28);
+}
+
+html, body { background: var(--bg); }
+
+/* ── Top Bar ────────────────────────────────────────────────── */
+.top-bar {
+  background: rgba(3, 10, 32, 0.94) !important;
+  border-bottom: 1px solid rgba(0, 160, 255, 0.20) !important;
+  box-shadow: 0 2px 24px rgba(0, 80, 200, 0.14), inset 0 -1px 0 rgba(0, 160, 255, 0.10) !important;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.live-indicator {
+  background: rgba(0, 20, 70, 0.65) !important;
+  border: 1px solid rgba(0, 180, 255, 0.22) !important;
+  color: #00c8ff !important;
+}
+.live-sep { color: rgba(0, 160, 255, 0.30) !important; }
+
+.system-time { color: #00c8ff !important; }
+
+.status-pill {
+  background: rgba(0, 80, 50, 0.30) !important;
+  border: 1px solid rgba(0, 200, 100, 0.22) !important;
+  color: #00d07a !important;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────── */
+.units-sidebar {
+  background: rgba(3, 8, 24, 0.92) !important;
+  border-right: 1px solid rgba(0, 140, 255, 0.16) !important;
+}
+
+.sidebar-header {
+  background: rgba(4, 12, 32, 0.96) !important;
+  border-bottom: 1px solid rgba(0, 140, 255, 0.12) !important;
+}
+
+.unit-card {
+  background: rgba(4, 12, 34, 0.70) !important;
+  border: 1px solid rgba(0, 120, 255, 0.14) !important;
+}
+
+.unit-card.is-open {
+  border-color: rgba(0, 200, 255, 0.42) !important;
+  box-shadow: 0 0 16px rgba(0, 150, 255, 0.15), inset 0 0 0 1px rgba(0, 200, 255, 0.08) !important;
+}
+
+.unit-header { background: rgba(4, 12, 34, 0.82) !important; }
+.unit-header:hover { background: rgba(0, 25, 80, 0.88) !important; }
+
+.sidebar-footer { border-top: 1px solid rgba(0, 140, 255, 0.12) !important; }
+
+.units-list::-webkit-scrollbar-thumb { background: rgba(0, 120, 255, 0.28) !important; }
+
+/* ── Map Area ────────────────────────────────────────────────── */
+.map-section  { background: #020710 !important; }
+.map-header   {
+  background: rgba(3, 9, 26, 0.94) !important;
+  border-bottom: 1px solid rgba(0, 140, 255, 0.14) !important;
+}
+.map-container { background: #020710 !important; }
+
+/* SVG filter: invert to dark navy, hue-shift to blue/cyan palette */
+.map-container svg {
+  filter: invert(0.90) hue-rotate(200deg) saturate(1.32) brightness(0.80) contrast(1.06);
+}
+
+/* Re-boost hotspot elements so they stay vivid after the SVG-wide filter */
+.map-container svg .hotspot-group .hs-core { filter: brightness(4.2) saturate(3.0); }
+.map-container svg .hotspot-group .hs-ring { filter: brightness(3.5) saturate(2.5); }
+.map-container svg .hotspot-group .hs-ping { filter: brightness(4.5) saturate(3.5); }
+
+/* Re-boost HUD corners so they stay visible cyan */
+.map-container svg .hud-corner { filter: brightness(5.0) saturate(4.0); }
+
+/* ── Detail Panel ────────────────────────────────────────────── */
+.detail-panel {
+  background: rgba(3, 8, 22, 0.94) !important;
+  border-left: 1px solid rgba(0, 140, 255, 0.16) !important;
+}
+
+.detail-empty  { color: rgba(80, 140, 220, 0.45) !important; }
+.empty-icon    { color: rgba(0, 180, 255, 0.35) !important; }
+
+.alert-card {
+  background: rgba(4, 14, 40, 0.75) !important;
+  border: 1px solid rgba(0, 130, 255, 0.16) !important;
+}
+
+.sensor-val-row { border-bottom: 1px solid rgba(0, 100, 200, 0.10) !important; }
+
+.pred-box {
+  background: rgba(4, 16, 50, 0.75) !important;
+  border: 1px solid rgba(0, 130, 255, 0.18) !important;
+}
+
+.health-bar-bg, .rul-bar-bg {
+  background: rgba(0, 50, 130, 0.30) !important;
+}
+
+.prob-box {
+  background: rgba(4, 12, 36, 0.82) !important;
+  border: 1px solid rgba(0, 120, 255, 0.16) !important;
+}
+
+/* ── Chart area ──────────────────────────────────────────────── */
+.chart-area { border-top: 1px solid rgba(0, 100, 200, 0.14) !important; }
+
+/* ── Alert summary ───────────────────────────────────────────── */
+.alert-summary { color: var(--text-mut); }
+
+::-webkit-scrollbar-track { background: rgba(0, 8, 28, 0.60) !important; }
+::-webkit-scrollbar-thumb { background: rgba(0, 110, 220, 0.28) !important; }
