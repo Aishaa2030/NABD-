@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نبض الطاقة — العرض التقديمي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#03061a;--surface:#060d28;
+  --blue:#0080ff;--cyan:#00c8ff;--green:#00ff86;--red:#ff3a3a;--amber:#ffb020;
+  --text:#e8f4ff;--dim:rgba(232,244,255,0.5);--border:rgba(0,200,255,0.15);
+}
+html,body{width:100%;height:100%;background:var(--bg);color:var(--text);
+  font-family:'Cairo',sans-serif;overflow:hidden;user-select:none;}
+
+/* ── BACKGROUND LAYERS ── */
+#pc{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.scan{position:fixed;top:-2px;left:0;right:0;height:2px;z-index:1;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(0,200,255,.35),transparent);
+  animation:scanDown 5s linear infinite;}
+@keyframes scanDown{from{top:-2px}to{top:100vh}}
+.grid{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.022;
+  background:linear-gradient(rgba(0,200,255,1) 1px,transparent 1px),
+             linear-gradient(90deg,rgba(0,200,255,1) 1px,transparent 1px);
+  background-size:40px 40px;}
+
+/* ── HUD CORNERS (global) ── */
+.hud-wrap{position:fixed;inset:0;z-index:5;pointer-events:none;}
+.hc{position:absolute;width:36px;height:36px;}
+.hc.tl{top:14px;left:14px;border-top:2px solid var(--cyan);border-left:2px solid var(--cyan);}
+.hc.tr{top:14px;right:14px;border-top:2px solid var(--cyan);border-right:2px solid var(--cyan);}
+.hc.bl{bottom:14px;left:14px;border-bottom:2px solid var(--cyan);border-left:2px solid var(--cyan);}
+.hc.br{bottom:14px;right:14px;border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan);}
+
+/* ── SLIDES ── */
+.pres{position:relative;z-index:10;width:100vw;height:100vh;overflow:hidden;}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:56px 80px;opacity:0;pointer-events:none;
+  transition:opacity .7s ease,transform .7s ease;transform:scale(.97);}
+.slide.active{opacity:1;pointer-events:auto;transform:scale(1);}
+
+/* ── ENTRY ANIMATIONS ── */
+.ai{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;}
+.ai.v{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.1s}.d2{transition-delay:.25s}.d3{transition-delay:.4s}
+.d4{transition-delay:.55s}.d5{transition-delay:.7s}
+
+/* ── NAV BAR ── */
+.nav{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:100;
+  display:flex;align-items:center;gap:8px;
+  background:rgba(3,6,26,.85);border:1px solid var(--border);border-radius:50px;
+  padding:7px 18px;backdrop-filter:blur(14px);}
+.nd{width:8px;height:8px;border-radius:50%;background:rgba(0,200,255,.2);
+  border:1px solid rgba(0,200,255,.35);cursor:pointer;transition:all .3s;}
+.nd.a{background:var(--cyan);box-shadow:0 0 10px var(--cyan);width:22px;border-radius:4px;}
+.nb{background:none;border:none;color:var(--cyan);font-size:20px;cursor:pointer;
+  padding:0 6px;opacity:.65;transition:opacity .2s;}
+.nb:hover{opacity:1;}
+
+/* ── UI CHROME ── */
+.fs-btn{position:fixed;top:14px;left:14px;z-index:200;background:rgba(3,6,26,.75);
+  border:1px solid var(--border);border-radius:4px;color:var(--cyan);padding:5px 10px;
+  cursor:pointer;font-size:11px;letter-spacing:2px;font-family:'Rajdhani',sans-serif;transition:all .2s;}
+.fs-btn:hover{background:rgba(0,200,255,.1);border-color:var(--cyan);}
+.sc{position:fixed;top:18px;right:18px;z-index:200;font-family:'JetBrains Mono',monospace;
+  font-size:12px;color:var(--dim);}
+.sc span{color:var(--cyan);}
+
+/* ═══════════════════════════════
+   SLIDE 1 — OPENING
+═══════════════════════════════ */
+.s1-logo{width:90px;height:90px;filter:drop-shadow(0 0 28px rgba(0,200,255,.9));
+  animation:lp 3s ease-in-out infinite;margin-bottom:26px;}
+@keyframes lp{0%,100%{filter:drop-shadow(0 0 18px rgba(0,200,255,.6))}
+              50%{filter:drop-shadow(0 0 48px rgba(0,200,255,1))}}
+.s1-title{font-family:'Cairo',sans-serif;font-size:clamp(44px,7vw,82px);font-weight:900;
+  color:#fff;text-align:center;line-height:1.1;
+  text-shadow:0 0 40px rgba(0,200,255,.45);}
+.s1-title .ac{color:var(--cyan);}
+.divider{width:180px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  margin:20px auto;animation:dg 2.5s ease-in-out infinite;}
+@keyframes dg{0%,100%{opacity:.5}50%{opacity:1;box-shadow:0 0 16px var(--cyan)}}
+.s1-sub{font-family:'Rajdhani',sans-serif;font-size:clamp(12px,1.8vw,18px);
+  color:var(--dim);letter-spacing:5px;text-transform:uppercase;text-align:center;margin-bottom:4px;}
+.s1-tag{font-size:clamp(15px,2vw,22px);color:var(--dim);text-align:center;
+  max-width:560px;line-height:1.75;margin-bottom:36px;}
+.badges{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
+.badge{padding:7px 18px;border:1px solid var(--border);border-radius:4px;
+  font-family:'Rajdhani',sans-serif;font-size:12px;letter-spacing:2px;
+  color:var(--cyan);background:rgba(0,200,255,.05);}
+
+/* ═══════════════════════════════
+   SLIDE 2 — PROBLEM
+═══════════════════════════════ */
+.s2h{font-size:clamp(28px,4.5vw,58px);font-weight:900;color:#fff;text-align:center;margin-bottom:12px;}
+.s2h .danger{color:var(--red);}
+.s2sub{color:var(--dim);text-align:center;font-size:16px;margin-bottom:36px;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;width:100%;max-width:860px;}
+.sc-card{background:rgba(6,13,40,.8);border:1px solid rgba(255,58,58,.2);border-radius:8px;
+  padding:30px 20px;text-align:center;position:relative;overflow:hidden;}
+.sc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--red),transparent);}
+.snum{font-family:'Rajdhani',sans-serif;font-size:clamp(38px,5vw,64px);font-weight:700;
+  color:var(--red);line-height:1;text-shadow:0 0 20px rgba(255,58,58,.45);}
+.sunit{font-size:.48em;color:var(--dim);}
+.slabel{font-size:13px;color:var(--dim);margin-top:8px;line-height:1.55;}
+
+/* ═══════════════════════════════
+   SLIDE 3 — SOLUTION
+═══════════════════════════════ */
+.s3h{font-size:clamp(26px,4vw,52px);font-weight:900;color:#fff;text-align:center;margin-bottom:8px;}
+.s3sub{color:var(--dim);text-align:center;font-size:16px;margin-bottom:36px;}
+.pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;width:100%;max-width:980px;}
+.pillar{background:rgba(6,13,40,.8);border:1px solid var(--border);border-radius:10px;
+  padding:26px 14px;text-align:center;transition:all .3s;cursor:default;}
+.pillar:hover{border-color:var(--cyan);box-shadow:0 0 28px rgba(0,200,255,.14);transform:translateY(-4px);}
+.p-icon{font-size:34px;margin-bottom:14px;}
+.p-name{font-size:14px;font-weight:700;color:var(--cyan);margin-bottom:8px;}
+.p-desc{font-size:12px;color:var(--dim);line-height:1.6;}
+
+/* ═══════════════════════════════
+   SLIDE 4 — DIGITAL TWIN MAP
+═══════════════════════════════ */
+.s4h{text-align:center;margin-bottom:20px;}
+.s4title{font-family:'Rajdhani',sans-serif;font-size:clamp(18px,2.8vw,36px);font-weight:700;
+  color:var(--cyan);letter-spacing:4px;}
+.s4sub{color:var(--dim);font-size:13px;margin-top:4px;}
+.map-wrap{width:100%;max-width:880px;background:rgba(6,13,40,.6);
+  border:1px solid var(--border);border-radius:10px;overflow:hidden;position:relative;}
+.map-wrap .mhc{position:absolute;width:16px;height:16px;z-index:2;pointer-events:none;}
+.map-wrap .mhc.tl{top:7px;left:7px;border-top:2px solid var(--cyan);border-left:2px solid var(--cyan);}
+.map-wrap .mhc.tr{top:7px;right:7px;border-top:2px solid var(--cyan);border-right:2px solid var(--cyan);}
+.map-wrap .mhc.bl{bottom:7px;left:7px;border-bottom:2px solid var(--cyan);border-left:2px solid var(--cyan);}
+.map-wrap .mhc.br{bottom:7px;right:7px;border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan);}
+#pmap{width:100%;height:auto;display:block;}
+.fp{stroke-dasharray:24 10;animation:flow 2s linear infinite;}
+.fp.slow{animation-duration:3.5s;}
+.fp.rev{animation:flowR 2.5s linear infinite;}
+@keyframes flow{from{stroke-dashoffset:68}to{stroke-dashoffset:0}}
+@keyframes flowR{from{stroke-dashoffset:0}to{stroke-dashoffset:68}}
+.hsp{animation:hsPing 2.2s ease-out infinite;}
+@keyframes hsPing{0%{opacity:.9}100%{r:28;opacity:0}}
+
+/* live dot */
+.ld{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 8px var(--green);animation:lv 1s ease-in-out infinite;vertical-align:middle;margin-right:6px;}
+@keyframes lv{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* ═══════════════════════════════
+   SLIDE 5 — DIAGNOSTICS
+═══════════════════════════════ */
+.diag{display:grid;grid-template-columns:1fr 1.15fr;gap:24px;width:100%;max-width:1080px;}
+.dc{background:rgba(6,13,40,.8);border:1px solid var(--border);border-radius:8px;padding:18px;margin-bottom:0;}
+.dc+.dc{margin-top:16px;}
+.dct{font-family:'Rajdhani',sans-serif;font-size:12px;letter-spacing:3px;color:var(--dim);
+  text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.dct::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 6px var(--cyan);flex-shrink:0;}
+.gr{display:flex;flex-direction:column;gap:10px;}
+.gl{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-bottom:5px;}
+.gl .v{font-family:'JetBrains Mono',monospace;color:var(--cyan);}
+.gl .vw{font-family:'JetBrains Mono',monospace;color:var(--amber);}
+.gl .vd{font-family:'JetBrains Mono',monospace;color:var(--red);}
+.gt{height:5px;background:rgba(0,200,255,.08);border-radius:3px;overflow:hidden;}
+.gf{height:100%;border-radius:3px;width:0;transition:width 1.4s ease .3s;}
+.gf.ok{background:linear-gradient(90deg,var(--green),#00c8a0);}
+.gf.warn{background:linear-gradient(90deg,var(--amber),#ff8c00);}
+.gf.danger{background:linear-gradient(90deg,var(--red),#ff6060);}
+.mini-chart{width:100%;height:76px;}
+.ai-box{background:linear-gradient(135deg,rgba(0,200,255,.07),rgba(0,128,255,.04));
+  border:1px solid rgba(0,200,255,.28);border-radius:6px;padding:14px;position:relative;margin-top:4px;}
+.ai-box::before{content:'AI PREDICTION';position:absolute;top:-8px;left:12px;
+  background:var(--bg);padding:0 6px;font-family:'Rajdhani',sans-serif;
+  font-size:10px;letter-spacing:3px;color:var(--cyan);}
+.air{font-size:14px;color:var(--amber);font-weight:700;margin-bottom:6px;}
+.aic{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);}
+.sum{display:flex;gap:14px;flex-wrap:wrap;}
+.sum-item{flex:1;min-width:72px;text-align:center;}
+.sum-n{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;}
+
+/* ═══════════════════════════════
+   SLIDE 6 — RESULTS
+═══════════════════════════════ */
+.s6h{font-size:clamp(26px,4vw,52px);font-weight:900;color:#fff;text-align:center;margin-bottom:36px;}
+.s6h .ac{color:var(--green);}
+.results{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;width:100%;max-width:860px;}
+.rc{background:rgba(6,13,40,.8);border:1px solid rgba(0,255,134,.2);border-radius:10px;
+  padding:32px 20px;text-align:center;position:relative;overflow:hidden;}
+.rc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--green),transparent);}
+.rn{font-family:'Rajdhani',sans-serif;font-size:clamp(44px,6vw,70px);font-weight:700;
+  color:var(--green);line-height:1;text-shadow:0 0 28px rgba(0,255,134,.38);}
+.rl{font-size:14px;color:var(--dim);margin-top:8px;line-height:1.5;}
+.extra-row{display:flex;gap:36px;margin-top:36px;flex-wrap:wrap;justify-content:center;align-items:center;}
+.ex-item{text-align:center;}
+.ex-n{font-family:'Rajdhani',sans-serif;font-size:clamp(36px,5vw,56px);font-weight:700;color:#fff;}
+.ex-l{font-size:12px;color:var(--dim);}
+.vsep{width:1px;height:50px;background:var(--border);}
+
+/* ═══════════════════════════════
+   SLIDE 7 — CLOSING
+═══════════════════════════════ */
+.s7-logo{width:110px;filter:drop-shadow(0 0 36px rgba(0,200,255,.9));
+  animation:lp 2.5s ease-in-out infinite;margin-bottom:22px;}
+.s7t{font-size:clamp(38px,6vw,72px);font-weight:900;color:#fff;text-align:center;
+  text-shadow:0 0 36px rgba(0,200,255,.38);}
+.s7t .ac{color:var(--cyan);}
+.s7sub{font-family:'Rajdhani',sans-serif;font-size:14px;letter-spacing:5px;
+  color:var(--dim);text-align:center;margin:14px 0 36px;}
+.cta{padding:14px 46px;background:linear-gradient(135deg,var(--blue),var(--cyan));
+  border:none;border-radius:6px;color:#fff;font-family:'Cairo',sans-serif;font-size:17px;
+  font-weight:700;cursor:pointer;box-shadow:0 0 28px rgba(0,200,255,.38);
+  transition:all .3s;margin-bottom:36px;}
+.cta:hover{transform:translateY(-3px);box-shadow:0 0 48px rgba(0,200,255,.65);}
+.contact{display:flex;gap:36px;align-items:center;justify-content:center;flex-wrap:wrap;}
+.ci{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.cl{font-family:'Rajdhani',sans-serif;font-size:10px;letter-spacing:3px;color:var(--dim);text-transform:uppercase;}
+.cv{font-size:14px;color:var(--cyan);}
+</style>
+</head>
+<body>
+
+<canvas id="pc"></canvas>
+<div class="scan"></div>
+<div class="grid"></div>
+<div class="hud-wrap">
+  <div class="hc tl"></div><div class="hc tr"></div>
+  <div class="hc bl"></div><div class="hc br"></div>
+</div>
+<button class="fs-btn" onclick="toggleFS()">⛶ FULLSCREEN</button>
+<div class="sc"><span id="sn">01</span> / <span id="st">07</span></div>
+
+<div class="pres" id="pres">
+
+  <!-- ══ SLIDE 1: OPENING ══ -->
+  <div class="slide active" id="s0">
+    <img src="logo.svg" class="s1-logo ai" alt="نبض الطاقة">
+    <div class="s1-title ai d1">نبض <span class="ac">الطاقة</span></div>
+    <div class="divider ai d2"></div>
+    <div class="s1-sub ai d2">NABD AL-TAQA  •  ENERGY PULSE</div>
+    <div class="s1-tag ai d3">منصة الصيانة التنبؤية المدعومة بالذكاء الاصطناعي<br>للمحطات الصناعية والطاقوية</div>
+    <div class="badges ai d4">
+      <span class="badge">DIGITAL TWIN</span>
+      <span class="badge">AI PREDICTIVE</span>
+      <span class="badge">REAL-TIME IoT</span>
+      <span class="badge">ARABIC FIRST</span>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 2: PROBLEM ══ -->
+  <div class="slide" id="s1">
+    <div class="s2h ai">ماذا يُكلِّفك <span class="danger">العطل المفاجئ</span>؟</div>
+    <div class="s2sub ai d1">كل توقف غير مخطط يعني خسائر فادحة وتهديداً حقيقياً للسلامة</div>
+    <div class="stats ai d2">
+      <div class="sc-card">
+        <div class="snum"><span class="cnt" data-t="30">0</span><span class="sunit">%</span></div>
+        <div class="slabel">من التوقفات الصناعية غير متوقعة وتقع بدون أي إنذار مسبق</div>
+      </div>
+      <div class="sc-card">
+        <div class="snum"><span class="cnt" data-t="5">0</span><span class="sunit">×</span></div>
+        <div class="slabel">تكلفة الصيانة التفاعلية مقارنةً بالصيانة الوقائية المجدولة</div>
+      </div>
+      <div class="sc-card">
+        <div class="snum"><span class="cnt" data-t="47">0</span><span class="sunit">%</span></div>
+        <div class="slabel">من قادة الصناعة يفتقرون لرؤية آنية كاملة عن حالة معداتهم</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 3: SOLUTION ══ -->
+  <div class="slide" id="s2">
+    <div class="s3h ai">الحل: <span style="color:var(--cyan)">نبض الطاقة</span></div>
+    <div class="s3sub ai d1">منظومة تقنية متكاملة تُحوِّل بيانات مصنعك إلى قرارات استباقية</div>
+    <div class="pillars ai d2">
+      <div class="pillar">
+        <div class="p-icon">🔮</div>
+        <div class="p-name">التوأم الرقمي</div>
+        <div class="p-desc">محاكاة حية لكل معدة في المحطة بشكل مرئي تفاعلي</div>
+      </div>
+      <div class="pillar">
+        <div class="p-icon">🧠</div>
+        <div class="p-name">ذكاء اصطناعي</div>
+        <div class="p-desc">كشف الأعطال قبل 30 يوماً بدقة تصل إلى 94%</div>
+      </div>
+      <div class="pillar">
+        <div class="p-icon">📡</div>
+        <div class="p-name">مستشعرات IoT</div>
+        <div class="p-desc">رصد مستمر للحرارة والاهتزاز والضغط وآلاف المتغيرات</div>
+      </div>
+      <div class="pillar">
+        <div class="p-icon">⚡</div>
+        <div class="p-name">تنبيه فوري</div>
+        <div class="p-desc">إشعارات لحظية وتقارير تشغيلية آنية على مدار الساعة</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 4: DIGITAL TWIN ══ -->
+  <div class="slide" id="s3" style="padding:38px 56px;">
+    <div class="s4h ai">
+      <div class="s4title">DIGITAL TWIN  •  التوأم الرقمي</div>
+      <div class="s4sub"><span class="ld"></span>خريطة تفاعلية حية لمحطتك الصناعية — بث مباشر</div>
+    </div>
+    <div class="map-wrap ai d1">
+      <div class="mhc tl"></div><div class="mhc tr"></div>
+      <div class="mhc bl"></div><div class="mhc br"></div>
+      <svg id="pmap" viewBox="0 0 920 460" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="gf"><feGaussianBlur stdDeviation="4" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <pattern id="mg" width="30" height="30" patternUnits="userSpaceOnUse">
+            <path d="M30,0L0,0 0,30" fill="none" stroke="rgba(0,200,255,.07)" stroke-width=".5"/>
+          </pattern>
+          <linearGradient id="tg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#0a1a3a"/><stop offset="100%" stop-color="#0c1e45"/></linearGradient>
+          <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#1a0808"/><stop offset="100%" stop-color="#280e0e"/></linearGradient>
+          <linearGradient id="gg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#001a2a"/><stop offset="100%" stop-color="#002035"/></linearGradient>
+          <linearGradient id="fg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#001808"/><stop offset="100%" stop-color="#002012"/></linearGradient>
+        </defs>
+
+        <!-- BG -->
+        <rect width="920" height="460" fill="#030918"/>
+        <rect width="920" height="460" fill="url(#mg)"/>
+        <rect x="12" y="12" width="896" height="436" rx="3" fill="none"
+              stroke="rgba(0,200,255,.12)" stroke-width="1" stroke-dasharray="10,6"/>
+
+        <!-- ROADS -->
+        <rect x="12" y="198" width="896" height="18" fill="rgba(0,200,255,.03)"/>
+        <line x1="12" y1="207" x2="908" y2="207" stroke="rgba(0,200,255,.1)"
+              stroke-width="1" stroke-dasharray="20,14"/>
+        <rect x="404" y="12" width="18" height="436" fill="rgba(0,200,255,.03)"/>
+
+        <!-- STEAM: Boiler → Turbine -->
+        <polyline class="fp" points="140,197 140,165 162,165 162,140"
+                  fill="none" stroke="#00c8ff" stroke-width="4.5"
+                  stroke-linecap="round" opacity=".85"/>
+        <text x="100" y="172" fill="#00c8ff" font-family="Rajdhani" font-size="9"
+              letter-spacing="1" opacity=".75">STEAM</text>
+
+        <!-- SHAFT: Turbine → Generator -->
+        <line class="fp slow" x1="282" y1="100" x2="466" y2="100"
+              stroke="#ffd700" stroke-width="3.5"
+              stroke-dasharray="14,7" opacity=".8"/>
+        <text x="350" y="92" fill="#ffd700" font-family="Rajdhani" font-size="9"
+              letter-spacing="1" opacity=".75">SHAFT</text>
+
+        <!-- FUEL: Fuel → Boiler -->
+        <polyline class="fp rev" points="530,298 488,298 488,228 218,228 218,265 140,265"
+                  fill="none" stroke="#00ff86" stroke-width="4.5"
+                  stroke-linecap="round" opacity=".85"/>
+        <text x="320" y="220" fill="#00ff86" font-family="Rajdhani" font-size="9"
+              letter-spacing="1" opacity=".75">FUEL</text>
+
+        <!-- POWER OUT -->
+        <line class="fp" x1="672" y1="140" x2="672" y2="197"
+              stroke="#ff6060" stroke-width="3" stroke-dasharray="8,5" opacity=".75"/>
+        <text x="678" y="175" fill="#ff6060" font-family="Rajdhani" font-size="9"
+              opacity=".75">PWR</text>
+
+        <!-- COOLING -->
+        <polyline class="fp slow" points="590,140 590,197 640,197"
+                  fill="none" stroke="#40b8c8" stroke-width="3"
+                  stroke-linecap="round" opacity=".6"/>
+
+        <!-- ══ TURBINE ══ -->
+        <rect x="44" y="40" width="240" height="160" rx="4" fill="url(#tg)"
+              stroke="rgba(0,200,255,.35)" stroke-width="1.5"/>
+        <path d="M44,52 L44,40 L56,40" fill="none" stroke="#00c8ff" stroke-width="1.5"/>
+        <path d="M272,40 L284,40 L284,52" fill="none" stroke="#00c8ff" stroke-width="1.5"/>
+        <path d="M44,188 L44,200 L56,200" fill="none" stroke="#00c8ff" stroke-width="1.5"/>
+        <path d="M272,200 L284,200 L284,188" fill="none" stroke="#00c8ff" stroke-width="1.5"/>
+        <!-- rotor -->
+        <circle cx="164" cy="120" r="58" fill="none" stroke="rgba(0,200,255,.15)" stroke-width="1"/>
+        <circle cx="164" cy="120" r="42" fill="rgba(0,200,255,.05)" stroke="rgba(0,200,255,.28)" stroke-width="1.5"/>
+        <circle cx="164" cy="120" r="26" fill="rgba(0,200,255,.07)" stroke="rgba(0,200,255,.4)" stroke-width="1.5"/>
+        <circle cx="164" cy="120" r="11" fill="rgba(0,200,255,.5)" stroke="#00c8ff" stroke-width="2" filter="url(#gf)"/>
+        <!-- blades -->
+        <line x1="164" y1="62" x2="164" y2="94" stroke="#00c8ff" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+        <line x1="164" y1="146" x2="164" y2="178" stroke="#00c8ff" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+        <line x1="106" y1="120" x2="138" y2="120" stroke="#00c8ff" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+        <line x1="190" y1="120" x2="222" y2="120" stroke="#00c8ff" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+        <line x1="123" y1="79" x2="145" y2="101" stroke="#00c8ff" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+        <line x1="183" y1="139" x2="205" y2="161" stroke="#00c8ff" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+        <line x1="205" y1="79" x2="183" y2="101" stroke="#00c8ff" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+        <line x1="145" y1="139" x2="123" y2="161" stroke="#00c8ff" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+        <!-- label -->
+        <text x="164" y="214" text-anchor="middle" fill="#00c8ff"
+              font-family="Rajdhani" font-size="11" font-weight="700" letter-spacing="3">TURBINE</text>
+        <text x="164" y="228" text-anchor="middle" fill="rgba(0,200,255,.45)"
+              font-family="Cairo" font-size="8">التوربين</text>
+        <!-- status -->
+        <rect x="64" y="40" width="54" height="16" rx="3"
+              fill="rgba(0,200,255,.12)" stroke="rgba(0,200,255,.3)" stroke-width=".5"/>
+        <text x="91" y="51" text-anchor="middle" fill="#00c8ff"
+              font-family="JetBrains Mono" font-size="7.5">NORMAL</text>
+
+        <!-- ══ GENERATOR ══ -->
+        <rect x="466" y="40" width="210" height="102" rx="4" fill="url(#gg)"
+              stroke="rgba(0,200,255,.28)" stroke-width="1.5"/>
+        <path d="M466,52 L466,40 L478,40" fill="none" stroke="#00c8ff" stroke-width="1.5"/>
+        <path d="M664,40 L676,40 L676,52" fill="none" stroke="#00c8ff" stroke-width="1.5"/>
+        <path d="M466,130 L466,142 L478,142" fill="none" stroke="#00c8ff" stroke-width="1.5"/>
+        <path d="M664,142 L676,142 L676,130" fill="none" stroke="#00c8ff" stroke-width="1.5"/>
+        <!-- coil waves -->
+        <path d="M480,66 Q488,55 496,66 Q504,77 512,66 Q520,55 528,66 Q536,77 544,66 Q552,55 560,66 Q568,77 576,66 Q584,55 592,66 Q600,77 608,66 Q616,55 622,66"
+              fill="none" stroke="rgba(0,200,255,.45)" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M480,94 Q488,83 496,94 Q504,105 512,94 Q520,83 528,94 Q536,105 544,94 Q552,83 560,94 Q568,105 576,94 Q584,83 592,94 Q600,105 608,94 Q616,83 622,94"
+              fill="none" stroke="rgba(0,200,255,.45)" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="466" y1="91" x2="676" y2="91" stroke="rgba(0,200,255,.12)"
+              stroke-width="1.5" stroke-dasharray="5,3"/>
+        <!-- label -->
+        <text x="571" y="160" text-anchor="middle" fill="#00c8ff"
+              font-family="Rajdhani" font-size="11" font-weight="700" letter-spacing="3">GENERATOR</text>
+        <text x="571" y="174" text-anchor="middle" fill="rgba(0,200,255,.45)"
+              font-family="Cairo" font-size="8">المولّد</text>
+        <!-- status -->
+        <rect x="480" y="40" width="54" height="16" rx="3"
+              fill="rgba(0,200,255,.12)" stroke="rgba(0,200,255,.3)" stroke-width=".5"/>
+        <text x="507" y="51" text-anchor="middle" fill="#00c8ff"
+              font-family="JetBrains Mono" font-size="7.5">NORMAL</text>
+
+        <!-- ══ BOILER ══ -->
+        <rect x="44" y="240" width="160" height="168" rx="4" fill="url(#bg2)"
+              stroke="rgba(255,100,60,.38)" stroke-width="1.5"/>
+        <path d="M44,252 L44,240 L56,240" fill="none" stroke="#ff6a3c" stroke-width="1.5"/>
+        <path d="M192,240 L204,240 L204,252" fill="none" stroke="#ff6a3c" stroke-width="1.5"/>
+        <path d="M44,396 L44,408 L56,408" fill="none" stroke="#ff6a3c" stroke-width="1.5"/>
+        <path d="M192,408 L204,408 L204,396" fill="none" stroke="#ff6a3c" stroke-width="1.5"/>
+        <!-- tubes -->
+        <circle cx="76" cy="274" r="11" fill="none" stroke="rgba(255,100,60,.28)" stroke-width="1"/>
+        <circle cx="102" cy="274" r="11" fill="none" stroke="rgba(255,100,60,.28)" stroke-width="1"/>
+        <circle cx="128" cy="274" r="11" fill="none" stroke="rgba(255,100,60,.28)" stroke-width="1"/>
+        <circle cx="154" cy="274" r="11" fill="none" stroke="rgba(255,100,60,.28)" stroke-width="1"/>
+        <circle cx="76" cy="304" r="11" fill="none" stroke="rgba(255,100,60,.28)" stroke-width="1"/>
+        <circle cx="102" cy="304" r="11" fill="none" stroke="rgba(255,100,60,.28)" stroke-width="1"/>
+        <circle cx="128" cy="304" r="11" fill="none" stroke="rgba(255,100,60,.28)" stroke-width="1"/>
+        <circle cx="154" cy="304" r="11" fill="none" stroke="rgba(255,100,60,.28)" stroke-width="1"/>
+        <!-- flame glow -->
+        <ellipse cx="124" cy="388" rx="48" ry="13" fill="rgba(255,100,40,.18)"/>
+        <ellipse cx="124" cy="396" rx="28" ry="7" fill="rgba(255,120,40,.25)"/>
+        <!-- label -->
+        <text x="124" y="424" text-anchor="middle" fill="rgba(255,100,60,.9)"
+              font-family="Rajdhani" font-size="11" font-weight="700" letter-spacing="3">BOILER</text>
+        <text x="124" y="438" text-anchor="middle" fill="rgba(255,100,60,.45)"
+              font-family="Cairo" font-size="8">الغلاية</text>
+        <!-- status -->
+        <rect x="56" y="240" width="58" height="16" rx="3"
+              fill="rgba(255,180,32,.12)" stroke="rgba(255,180,32,.4)" stroke-width=".5"/>
+        <text x="85" y="251" text-anchor="middle" fill="#ffb420"
+              font-family="JetBrains Mono" font-size="7.5">WARNING</text>
+
+        <!-- ══ FUEL SYSTEM ══ -->
+        <rect x="466" y="218" width="330" height="210" rx="4" fill="url(#fg)"
+              stroke="rgba(0,255,134,.28)" stroke-width="1.5" stroke-dasharray="6,4"/>
+        <path d="M466,230 L466,218 L478,218" fill="none" stroke="#00ff86" stroke-width="1.5"/>
+        <path d="M784,218 L796,218 L796,230" fill="none" stroke="#00ff86" stroke-width="1.5"/>
+        <path d="M466,416 L466,428 L478,428" fill="none" stroke="#00ff86" stroke-width="1.5"/>
+        <path d="M784,428 L796,428 L796,416" fill="none" stroke="#00ff86" stroke-width="1.5"/>
+        <!-- tanks -->
+        <circle cx="546" cy="294" r="40" fill="rgba(0,255,134,.05)" stroke="rgba(0,255,134,.28)" stroke-width="1.5"/>
+        <circle cx="546" cy="294" r="28" fill="none" stroke="rgba(0,255,134,.18)" stroke-width="1"/>
+        <circle cx="546" cy="294" r="8"  fill="rgba(0,255,134,.4)" stroke="#00ff86" stroke-width="1.5" filter="url(#gf)"/>
+        <circle cx="660" cy="284" r="32" fill="rgba(0,255,134,.05)" stroke="rgba(0,255,134,.28)" stroke-width="1.5"/>
+        <circle cx="660" cy="284" r="22" fill="none" stroke="rgba(0,255,134,.18)" stroke-width="1"/>
+        <circle cx="660" cy="284" r="7"  fill="rgba(0,255,134,.4)" stroke="#00ff86" stroke-width="1.5" filter="url(#gf)"/>
+        <circle cx="546" cy="388" r="26" fill="rgba(0,255,134,.05)" stroke="rgba(0,255,134,.28)" stroke-width="1.5"/>
+        <circle cx="546" cy="388" r="6"  fill="rgba(0,255,134,.4)" stroke="#00ff86" stroke-width="1.5"/>
+        <circle cx="660" cy="380" r="24" fill="rgba(0,255,134,.05)" stroke="rgba(0,255,134,.28)" stroke-width="1.5"/>
+        <circle cx="660" cy="380" r="6"  fill="rgba(0,255,134,.4)" stroke="#00ff86" stroke-width="1.5"/>
+        <!-- manifold -->
+        <line x1="546" y1="332" x2="546" y2="362" stroke="rgba(0,255,134,.38)" stroke-width="3.5" stroke-linecap="round"/>
+        <line x1="546" y1="362" x2="660" y2="362" stroke="rgba(0,255,134,.38)" stroke-width="3.5" stroke-linecap="round"/>
+        <line x1="660" y1="314" x2="660" y2="362" stroke="rgba(0,255,134,.38)" stroke-width="3.5" stroke-linecap="round"/>
+        <!-- label -->
+        <text x="630" y="440" text-anchor="middle" fill="rgba(0,255,134,.9)"
+              font-family="Rajdhani" font-size="11" font-weight="700" letter-spacing="3">FUEL SYSTEM</text>
+        <text x="630" y="454" text-anchor="middle" fill="rgba(0,255,134,.45)"
+              font-family="Cairo" font-size="8">نظام الوقود</text>
+        <!-- status -->
+        <rect x="478" y="218" width="58" height="16" rx="3"
+              fill="rgba(0,255,134,.12)" stroke="rgba(0,255,134,.3)" stroke-width=".5"/>
+        <text x="507" y="229" text-anchor="middle" fill="#00ff86"
+              font-family="JetBrains Mono" font-size="7.5">OPTIMAL</text>
+
+        <!-- ══ HOTSPOT PINGS ══ -->
+        <circle cx="164" cy="120" r="12" fill="none" stroke="#00c8ff"
+                stroke-width="1.5" class="hsp" style="animation-delay:0s"/>
+        <circle cx="571" cy="91" r="12" fill="none" stroke="#00c8ff"
+                stroke-width="1.5" class="hsp" style="animation-delay:.8s"/>
+        <circle cx="124" cy="325" r="12" fill="none" stroke="#ff6060"
+                stroke-width="1.5" class="hsp" style="animation-delay:1.6s"/>
+        <circle cx="600" cy="340" r="12" fill="none" stroke="#00ff86"
+                stroke-width="1.5" class="hsp" style="animation-delay:2.4s"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 5: DIAGNOSTICS ══ -->
+  <div class="slide" id="s4">
+    <div style="text-align:center;margin-bottom:20px;" class="ai">
+      <div class="s4title" style="font-size:clamp(18px,2.6vw,34px);">
+        التشخيص اللحظي <span class="ld"></span>
+      </div>
+      <div class="s4sub">مراقبة آنية لكل معدة — تحديث كل 500ms</div>
+    </div>
+    <div class="diag ai d1">
+      <!-- LEFT -->
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="dc">
+          <div class="dct">التوربين — الوحدة 01</div>
+          <div class="gr">
+            <div>
+              <div class="gl"><span>درجة الحرارة</span><span class="v">342°C</span></div>
+              <div class="gt"><div class="gf ok" data-w="68"></div></div>
+            </div>
+            <div>
+              <div class="gl"><span>الاهتزاز</span><span class="vw">7.8 mm/s ⚠</span></div>
+              <div class="gt"><div class="gf warn" data-w="78"></div></div>
+            </div>
+            <div>
+              <div class="gl"><span>سرعة الدوران</span><span class="v">3000 RPM</span></div>
+              <div class="gt"><div class="gf ok" data-w="100"></div></div>
+            </div>
+            <div>
+              <div class="gl"><span>ضغط البخار</span><span class="v">18.4 bar</span></div>
+              <div class="gt"><div class="gf ok" data-w="55"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="dc">
+          <div class="dct">الغلاية — الوحدة 01</div>
+          <div class="gr">
+            <div>
+              <div class="gl"><span>حرارة الاحتراق</span><span class="vd">891°C ✕</span></div>
+              <div class="gt"><div class="gf danger" data-w="89"></div></div>
+            </div>
+            <div>
+              <div class="gl"><span>كفاءة الاحتراق</span><span class="v">82%</span></div>
+              <div class="gt"><div class="gf ok" data-w="82"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- RIGHT -->
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="dc">
+          <div class="dct">رسم بياني — الاهتزاز (24 ساعة)</div>
+          <svg class="mini-chart" viewBox="0 0 300 76">
+            <defs>
+              <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(0,200,255,.28)"/>
+                <stop offset="100%" stop-color="rgba(0,200,255,0)"/>
+              </linearGradient>
+            </defs>
+            <rect width="300" height="76" fill="rgba(0,200,255,.025)"/>
+            <line x1="0" y1="19" x2="300" y2="19" stroke="rgba(0,200,255,.07)" stroke-width=".5"/>
+            <line x1="0" y1="38" x2="300" y2="38" stroke="rgba(0,200,255,.07)" stroke-width=".5"/>
+            <line x1="0" y1="57" x2="300" y2="57" stroke="rgba(0,200,255,.07)" stroke-width=".5"/>
+            <line x1="0" y1="28" x2="300" y2="28" stroke="rgba(255,180,32,.35)" stroke-width="1" stroke-dasharray="4,3"/>
+            <text x="4" y="26" fill="rgba(255,180,32,.55)" font-family="Rajdhani" font-size="7">WARN LEVEL</text>
+            <path d="M0,58 C20,56 40,53 60,50 C80,47 100,46 120,48 C140,50 160,52 180,50 C200,48 220,42 240,36 C260,30 280,27 300,23"
+                  fill="url(#cg)" stroke="none"/>
+            <path d="M0,58 C20,56 40,53 60,50 C80,47 100,46 120,48 C140,50 160,52 180,50 C200,48 220,42 240,36 C260,30 280,27 300,23"
+                  fill="none" stroke="#00c8ff" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="300" cy="23" r="4" fill="#00c8ff" filter="url(#gf)"/>
+          </svg>
+        </div>
+        <div class="ai-box">
+          <div class="air">⚠ تحذير: احتمال عطل في محمل التوربين</div>
+          <div class="aic">مستوى الثقة: 87.3% — متوقع خلال 18 يوماً</div>
+          <div style="margin-top:10px;font-size:12px;color:var(--dim);">
+            التوصية: جدولة فحص محامل الدوران قبل تاريخ 2026-07-18
+          </div>
+        </div>
+        <div class="dc">
+          <div class="dct">ملخص النظام</div>
+          <div class="sum">
+            <div class="sum-item">
+              <div class="sum-n" style="color:var(--green);">3</div>
+              <div style="font-size:11px;color:var(--dim);">وحدات سليمة</div>
+            </div>
+            <div class="sum-item">
+              <div class="sum-n" style="color:var(--amber);">1</div>
+              <div style="font-size:11px;color:var(--dim);">تحذير نشط</div>
+            </div>
+            <div class="sum-item">
+              <div class="sum-n" style="color:var(--cyan);">98.2%</div>
+              <div style="font-size:11px;color:var(--dim);">الكفاءة العامة</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 6: RESULTS ══ -->
+  <div class="slide" id="s5">
+    <div class="s6h ai">النتائج المُثبتة <span class="ac">بالأرقام</span></div>
+    <div class="results ai d1">
+      <div class="rc">
+        <div class="rn"><span class="cnt" data-t="40">0</span><span style="font-size:.48em;color:var(--dim)">%</span></div>
+        <div class="rl">تخفيض في تكاليف الصيانة غير المخططة</div>
+      </div>
+      <div class="rc">
+        <div class="rn"><span class="cnt" data-t="94">0</span><span style="font-size:.48em;color:var(--dim)">%</span></div>
+        <div class="rl">دقة التنبؤ بالأعطال قبل وقوعها بالذكاء الاصطناعي</div>
+      </div>
+      <div class="rc">
+        <div class="rn"><span class="cnt" data-t="30">0</span><span style="font-size:.48em;color:var(--dim)">يوم</span></div>
+        <div class="rl">مهلة الإنذار المبكر قبل وقوع العطل</div>
+      </div>
+    </div>
+    <div class="extra-row ai d3">
+      <div class="ex-item">
+        <div class="ex-n"><span class="cnt" data-t="3">0</span>×</div>
+        <div class="ex-l">زيادة عمر المعدات</div>
+      </div>
+      <div class="vsep"></div>
+      <div class="ex-item">
+        <div class="ex-n"><span class="cnt" data-t="99">0</span>.8%</div>
+        <div class="ex-l">وقت التشغيل المضمون</div>
+      </div>
+      <div class="vsep"></div>
+      <div class="ex-item">
+        <div class="ex-n">24/7</div>
+        <div class="ex-l">مراقبة مستمرة</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 7: CLOSING ══ -->
+  <div class="slide" id="s6">
+    <img src="logo.svg" class="s7-logo ai" alt="">
+    <div class="s7t ai d1">نبض <span class="ac">الطاقة</span></div>
+    <div class="s7sub ai d2">PREDICTIVE MAINTENANCE PLATFORM  •  منصة الصيانة التنبؤية</div>
+    <button class="cta ai d3" onclick="window.open('index.html','_blank')">← استكشف المنصة التفاعلية الآن</button>
+    <div class="contact ai d4">
+      <div class="ci"><span class="cl">الموقع</span><span class="cv">nabd-energy.sa</span></div>
+      <div style="width:1px;height:36px;background:var(--border)"></div>
+      <div class="ci"><span class="cl">البريد</span><span class="cv">hello@nabd-energy.sa</span></div>
+      <div style="width:1px;height:36px;background:var(--border)"></div>
+      <div class="ci"><span class="cl">هاتف</span><span class="cv">+966 11 000 0000</span></div>
+    </div>
+  </div>
+
+</div><!-- /pres -->
+
+<!-- NAV -->
+<div class="nav" id="nav">
+  <button class="nb" onclick="prev()">‹</button>
+  <div id="dots"></div>
+  <button class="nb" onclick="next()">›</button>
+</div>
+
+<script>
+/* ── PARTICLES ── */
+const cv = document.getElementById('pc');
+const cx = cv.getContext('2d');
+let W, H, pts = [];
+function resize(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
+resize(); addEventListener('resize',resize);
+class P{
+  constructor(){this.reset();}
+  reset(){this.x=Math.random()*W;this.y=Math.random()*H;
+    this.vx=(Math.random()-.5)*.28;this.vy=(Math.random()-.5)*.28;
+    this.a=Math.random()*.35+.04;this.r=Math.random()*1.4+.4;
+    this.c=Math.random()>.65?'#00ff86':'#00c8ff';}
+  step(){this.x+=this.vx;this.y+=this.vy;
+    if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset();}
+  draw(){cx.beginPath();cx.arc(this.x,this.y,this.r,0,Math.PI*2);
+    cx.fillStyle=this.c;cx.globalAlpha=this.a;cx.fill();cx.globalAlpha=1;}
+}
+for(let i=0;i<100;i++)pts.push(new P());
+function tick(){
+  cx.clearRect(0,0,W,H);
+  for(let i=0;i<pts.length;i++){
+    for(let j=i+1;j<pts.length;j++){
+      const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.hypot(dx,dy);
+      if(d<90){cx.beginPath();cx.moveTo(pts[i].x,pts[i].y);cx.lineTo(pts[j].x,pts[j].y);
+        cx.strokeStyle='#00c8ff';cx.globalAlpha=(1-d/90)*.07;cx.lineWidth=.5;cx.stroke();cx.globalAlpha=1;}
+    }
+  }
+  pts.forEach(p=>{p.step();p.draw();});
+  requestAnimationFrame(tick);
+}
+tick();
+
+/* ── SLIDES ── */
+const N=7, slides=document.querySelectorAll('.slide');
+let cur=0;
+document.getElementById('st').textContent=String(N).padStart(2,'0');
+const dotsEl=document.getElementById('dots');
+for(let i=0;i<N;i++){
+  const d=document.createElement('div');
+  d.className='nd'+(i===0?' a':'');
+  d.onclick=()=>go(i);
+  dotsEl.appendChild(d);
+}
+
+function go(n){
+  if(n===cur||n<0||n>=N)return;
+  slides[cur].classList.remove('active');
+  cur=n;
+  slides[cur].classList.add('active');
+  document.querySelectorAll('.nd').forEach((d,i)=>d.classList.toggle('a',i===cur));
+  document.getElementById('sn').textContent=String(cur+1).padStart(2,'0');
+  setTimeout(()=>{
+    slides[cur].querySelectorAll('.ai').forEach(el=>el.classList.add('v'));
+    runGauges();
+    runCounters();
+  },80);
+}
+function next(){go(cur+1);}
+function prev(){go(cur-1);}
+
+/* init first slide */
+setTimeout(()=>slides[0].querySelectorAll('.ai').forEach(el=>el.classList.add('v')),200);
+
+/* keyboard */
+addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '){e.preventDefault();next();}
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();prev();}
+  if(e.key.toLowerCase()==='f')toggleFS();
+});
+/* touch */
+let tx=0;
+addEventListener('touchstart',e=>tx=e.changedTouches[0].screenX,{passive:true});
+addEventListener('touchend',e=>{const d=e.changedTouches[0].screenX-tx;if(Math.abs(d)>50)d<0?next():prev();});
+
+/* ── GAUGES ── */
+function runGauges(){
+  slides[cur].querySelectorAll('.gf').forEach(el=>{
+    const w=el.dataset.w+'%';
+    el.style.width='0';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.width=w;}));
+  });
+}
+
+/* ── COUNTERS ── */
+function runCounters(){
+  slides[cur].querySelectorAll('.cnt').forEach(el=>{
+    const target=+el.dataset.t, dur=1400;
+    let start=null;
+    function step(ts){
+      if(!start)start=ts;
+      const p=Math.min((ts-start)/dur,1);
+      const ease=1-Math.pow(1-p,3);
+      el.textContent=Math.round(ease*target);
+      if(p<1)requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+/* ── FULLSCREEN ── */
+function toggleFS(){
+  if(!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});
+  else document.exitFullscreen();
+}
+</script>
+</body>
+</html>

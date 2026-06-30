@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>نبض الطاقة — Poster (White)</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+
+/* ── RESET + PRINT ──────────────────────────────── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+@page{size:210mm 297mm portrait;margin:0;}
+body{background:#e8eef8;display:flex;justify-content:center;padding:20px 0;font-family:'Cairo',sans-serif;}
+@media print{body{padding:0;background:#fff;}.poster{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
+
+/* ── POSTER SHELL  A4 ───────────────────────────── */
+.poster{
+  width:210mm;height:297mm;
+  position:relative;overflow:hidden;
+  background:#ffffff;
+  color:#051030;
+  display:flex;flex-direction:column;
+}
+
+/* ── BACKGROUND ──────────────────────────────────── */
+
+/* subtle photo texture — very light */
+.bg-photo{
+  position:absolute;inset:0;z-index:0;
+  background:url('Image/vi/caver.jpeg') center 20% / cover no-repeat;
+  opacity:.04;
+  mix-blend-mode:multiply;
+}
+
+/* light gradient washes */
+.bg-grad{
+  position:absolute;inset:0;z-index:1;
+  background:
+    radial-gradient(ellipse 80% 35% at 50%  0%,  rgba(0,80,200,.08)  0%, transparent 68%),
+    radial-gradient(ellipse 55% 28% at  8% 50%,  rgba(0,50,200,.05)  0%, transparent 62%),
+    radial-gradient(ellipse 50% 25% at 92% 42%,  rgba(0,100,230,.04) 0%, transparent 58%),
+    linear-gradient(to bottom, rgba(0,60,180,.04) 0%, rgba(255,255,255,0) 60%);
+}
+
+/* hair-line grid */
+.bg-grid{
+  position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.045;
+  background:
+    linear-gradient(rgba(0,100,200,1) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,100,200,1) 1px,transparent 1px);
+  background-size:20px 20px;
+}
+
+/* content sits above all bg layers */
+.content{
+  position:relative;z-index:10;
+  display:flex;flex-direction:column;
+  height:100%;padding:0 18px;
+}
+
+/* ── 01  HEADER ──────────────────────────────────── */
+.header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 0 10px;
+  border-bottom:1.5px solid rgba(0,100,200,.14);
+  flex-shrink:0;
+}
+.logo-row{display:flex;align-items:center;gap:8px;}
+.logo-img{width:32px;height:32px;object-fit:contain;
+  filter:drop-shadow(0 0 6px rgba(0,100,200,.45));}
+.logo-name{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;
+  color:#051030;letter-spacing:1.5px;}
+.logo-name span{color:#0060cc;}
+.header-tag{font-family:'Rajdhani',sans-serif;font-size:8px;font-weight:600;
+  color:rgba(0,90,180,.55);letter-spacing:3px;text-transform:uppercase;}
+
+/* ── 02  HERO ────────────────────────────────────── */
+.hero{
+  display:flex;flex-direction:column;align-items:center;
+  padding:12px 0 10px;flex-shrink:0;position:relative;
+}
+.hero::before{
+  content:'';position:absolute;
+  width:220px;height:60px;top:0;left:50%;transform:translateX(-50%);
+  background:radial-gradient(ellipse,rgba(0,90,220,.10) 0%,transparent 70%);
+  filter:blur(14px);pointer-events:none;
+}
+.hero-title{
+  font-size:52px;font-weight:900;line-height:.88;
+  text-align:center;position:relative;z-index:1;
+}
+.hero-w1{
+  display:block;color:#051030;
+  text-shadow:0 2px 12px rgba(0,80,200,.12),0 4px 18px rgba(0,0,0,.08);
+  letter-spacing:-1px;
+}
+.hero-w2{
+  display:block;color:#0060cc;
+  text-shadow:0 0 14px rgba(0,100,220,.3),0 2px 18px rgba(0,80,200,.15);
+  letter-spacing:-1.5px;
+}
+.hero-sub{
+  font-family:'Rajdhani',sans-serif;font-size:8.5px;font-weight:600;
+  letter-spacing:5px;color:rgba(0,80,180,.55);text-transform:uppercase;
+  margin-top:7px;
+}
+
+/* ── SEPARATOR ───────────────────────────────────── */
+.sep{display:flex;align-items:center;gap:8px;margin:7px 0;flex-shrink:0;}
+.sep-line  {flex:1;height:1px;background:linear-gradient(to left, rgba(0,100,200,.18),transparent);}
+.sep-line.r{background:linear-gradient(to right,rgba(0,100,200,.18),transparent);}
+.sep-label{
+  font-size:8.5px;font-weight:700;color:rgba(0,80,180,.75);
+  letter-spacing:1px;white-space:nowrap;padding:2px 10px;
+  border:1px solid rgba(0,100,200,.20);border-radius:20px;
+  background:rgba(0,80,200,.06);
+}
+.sep-sm{margin:6px 0 5px;}
+
+/* ── 03  PROBLEMS ────────────────────────────────── */
+.section-label{
+  display:flex;align-items:center;gap:6px;
+  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;
+  flex-shrink:0;margin-bottom:5px;
+}
+.sl-red {color:#c02020;}
+.sl-cyan{color:#0060cc;}
+.sl-gold{color:#b07400;}
+
+.problems-grid{display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
+
+.prob-card{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 12px;
+  background:rgba(255,240,240,.75);
+  border:1px solid rgba(200,50,50,.18);
+  border-right:3px solid rgba(200,50,50,.65);
+  border-radius:8px;
+  box-shadow:0 1px 6px rgba(200,50,50,.06),0 2px 12px rgba(0,0,0,.04);
+}
+.prob-num{
+  font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;
+  color:rgba(195,40,40,.70);line-height:1;min-width:24px;
+}
+.prob-body{display:flex;flex-direction:column;gap:1px;}
+.prob-title{font-size:10px;font-weight:700;color:#8a1010;}
+.prob-desc {font-size:8.5px;font-weight:400;color:rgba(100,30,30,.62);line-height:1.5;}
+
+/* ── 04  SOLUTION ────────────────────────────────── */
+.solutions-grid{display:flex;flex-direction:column;gap:4px;flex-shrink:0;}
+
+.sol-card{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 12px;
+  background:rgba(235,245,255,.80);
+  border:1px solid rgba(0,120,220,.18);
+  border-right:3px solid rgba(0,120,220,.65);
+  border-radius:8px;
+  box-shadow:0 1px 6px rgba(0,100,200,.06),0 2px 12px rgba(0,0,0,.04);
+}
+.sol-icon-box{
+  width:28px;height:28px;min-width:28px;border-radius:7px;
+  background:rgba(0,100,200,.10);border:1px solid rgba(0,120,200,.22);
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+}
+.sol-body{display:flex;flex-direction:column;gap:1px;}
+.sol-title{font-size:10px;font-weight:700;color:#00357a;}
+.sol-desc {font-size:8.5px;font-weight:400;color:rgba(0,50,110,.55);line-height:1.5;}
+
+/* ── 05  NUMBERS ─────────────────────────────────── */
+.stats-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:6px;flex-shrink:0;
+}
+.stat-card{
+  padding:10px 12px;
+  background:rgba(240,248,255,.90);
+  border:1px solid rgba(0,120,200,.16);
+  border-radius:10px;
+  box-shadow:0 1px 8px rgba(0,100,200,.07),0 2px 14px rgba(0,0,0,.04);
+  position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:'';position:absolute;top:0;right:0;width:40%;height:1.5px;
+  background:linear-gradient(to left,rgba(0,150,220,.45),transparent);
+}
+.stat-num{
+  font-family:'Rajdhani',sans-serif;font-size:34px;font-weight:700;
+  color:#051030;line-height:1;
+  text-shadow:0 0 10px rgba(0,100,200,.12);
+}
+.stat-unit{font-size:18px;font-weight:500;color:#0060cc;}
+.stat-label{font-size:8px;font-weight:600;color:rgba(0,60,130,.72);margin-top:3px;line-height:1.5;}
+
+.stat-card:nth-child(even) .stat-num {color:#0060cc;text-shadow:0 0 12px rgba(0,120,220,.25);}
+.stat-card:nth-child(even) .stat-unit{color:#051030;}
+
+/* ── 06  GOAL ────────────────────────────────────── */
+.goal-box{
+  padding:10px 14px;
+  background:rgba(255,250,235,.85);
+  border:1px solid rgba(160,110,0,.18);
+  border-radius:10px;
+  box-shadow:0 1px 8px rgba(160,110,0,.06),0 2px 14px rgba(0,0,0,.04);
+  flex-shrink:0;display:flex;align-items:flex-start;gap:9px;
+}
+.goal-icon{font-size:18px;line-height:1;margin-top:1px;}
+.goal-body{display:flex;flex-direction:column;gap:2px;}
+.goal-title{font-size:9.5px;font-weight:700;color:#8a5c00;letter-spacing:.5px;}
+.goal-text {font-size:8.5px;color:rgba(60,40,0,.65);line-height:1.7;}
+
+/* ── 07  FOOTER ──────────────────────────────────── */
+.footer{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;padding:8px 0 14px;
+  border-top:1px solid rgba(0,100,200,.12);
+  margin-top:auto;margin-bottom:4px;flex-shrink:0;
+}
+.footer-qr-wrap{display:flex;align-items:center;gap:7px;}
+.footer-qr{
+  width:50px;height:50px;min-width:50px;
+  border-radius:6px;border:1px solid rgba(0,100,200,.25);
+  background:#f0f6ff;display:block;
+}
+.footer-qr-info{display:flex;flex-direction:column;gap:2px;}
+.footer-qr-label{font-size:8px;font-weight:700;color:#0060cc;letter-spacing:.5px;}
+.footer-qr-url  {font-family:'Rajdhani',sans-serif;font-size:7px;color:rgba(0,80,160,.45);letter-spacing:.4px;}
+.footer-hash{
+  font-size:7px;font-weight:700;
+  color:rgba(0,80,160,.38);letter-spacing:.4px;
+  text-align:center;flex:1;line-height:1.8;
+}
+.footer-brand{
+  font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;
+  color:rgba(5,16,48,.70);letter-spacing:1px;white-space:nowrap;
+}
+.footer-brand b{color:#0060cc;}
+
+</style>
+</head>
+<body>
+<div class="poster">
+
+  <div class="bg-photo"></div>
+  <div class="bg-grad"></div>
+  <div class="bg-grid"></div>
+
+  <div class="content">
+
+    <!-- 01 HEADER -->
+    <div class="header">
+      <div class="logo-row">
+        <img src="logo.svg" class="logo-img" alt="NABD">
+        <div class="logo-name">NAB<span>D</span> &nbsp;نبض الطاقة</div>
+      </div>
+      <div class="header-tag">Predictive&nbsp;Maintenance&nbsp;·&nbsp;2026</div>
+    </div>
+
+    <!-- 02 HERO -->
+    <div class="hero">
+      <div class="hero-title">
+        <span class="hero-w1">نبـض</span>
+        <span class="hero-w2">الطاقـة</span>
+      </div>
+      <div class="hero-sub">منصة الصيانة التنبؤية الذكية لمحطات الطاقة</div>
+    </div>
+
+    <div class="sep">
+      <div class="sep-line r"></div>
+      <div class="sep-label">المشكلة</div>
+      <div class="sep-line"></div>
+    </div>
+
+    <!-- 03 PROBLEMS -->
+    <div class="section-label sl-red">
+      <span>⚠</span><span>العوائق الحالية في محطات الطاقة</span>
+    </div>
+    <div class="problems-grid">
+
+      <div class="prob-card">
+        <div class="prob-num">01</div>
+        <div class="prob-body">
+          <div class="prob-title">التوقف المفاجئ غير المتوقع</div>
+          <div class="prob-desc">أعطال مباغتة تُعطّل الإنتاج وتُكبّد المحطة خسائر تشغيلية فادحة</div>
+        </div>
+      </div>
+
+      <div class="prob-card">
+        <div class="prob-num">02</div>
+        <div class="prob-body">
+          <div class="prob-title">ارتفاع تكاليف الصيانة الطارئة</div>
+          <div class="prob-desc">صيانة تفاعلية بدون تخطيط ترفع التكلفة حتى 3 أضعاف المجدولة</div>
+        </div>
+      </div>
+
+      <div class="prob-card">
+        <div class="prob-num">03</div>
+        <div class="prob-body">
+          <div class="prob-title">غياب الرؤية التحليلية الآنية</div>
+          <div class="prob-desc">قرارات مبنية على الحدس لا البيانات، دون أنظمة تشخيص ذكي</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="sep sep-sm">
+      <div class="sep-line r"></div>
+      <div class="sep-label">الحل</div>
+      <div class="sep-line"></div>
+    </div>
+
+    <!-- 04 SOLUTION -->
+    <div class="section-label sl-cyan">
+      <span>◎</span><span>ماذا يقدم نبض الطاقة ؟</span>
+    </div>
+    <div class="solutions-grid">
+
+      <div class="sol-card">
+        <div class="sol-icon-box">📡</div>
+        <div class="sol-body">
+          <div class="sol-title">مراقبة الأصول لحظةً بلحظة</div>
+          <div class="sol-desc">رصد مستمر 24/7 لجميع أصول المحطة مع لوحة تحكم تفاعلية فورية</div>
+        </div>
+      </div>
+
+      <div class="sol-card">
+        <div class="sol-icon-box">🧠</div>
+        <div class="sol-body">
+          <div class="sol-title">توقع الأعطال قبل وقوعها</div>
+          <div class="sol-desc">نماذج ذكاء اصطناعي تُنبّه الفريق قبل العطل بأيام أو أسابيع</div>
+        </div>
+      </div>
+
+      <div class="sol-card">
+        <div class="sol-icon-box">⚡</div>
+        <div class="sol-body">
+          <div class="sol-title">قرارات مدعومة بالبيانات</div>
+          <div class="sol-desc">تقارير RUL وتشخيص ذكي يمنح المهندس صورة كاملة عن صحة الأصول</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="sep sep-sm">
+      <div class="sep-line r"></div>
+      <div class="sep-label">الأرقام</div>
+      <div class="sep-line"></div>
+    </div>
+
+    <!-- 05 NUMBERS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num">99.9<span class="stat-unit">%</span></div>
+        <div class="stat-label">استمرارية تشغيل الأصول</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">65<span class="stat-unit">%</span></div>
+        <div class="stat-label">تقليل وقت التوقف المفاجئ</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">3<span class="stat-unit">×</span></div>
+        <div class="stat-label">خفض تكلفة الصيانة الطارئة</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">98<span class="stat-unit">%</span></div>
+        <div class="stat-label">دقة التشخيص التنبؤي</div>
+      </div>
+    </div>
+
+    <div class="sep sep-sm">
+      <div class="sep-line r"></div>
+      <div class="sep-label">الهدف</div>
+      <div class="sep-line"></div>
+    </div>
+
+    <!-- 06 GOAL -->
+    <div class="goal-box">
+      <div class="goal-icon">🎯</div>
+      <div class="goal-body">
+        <div class="goal-title">هدفنا الاستراتيجي — رؤية ٢٠٣٠</div>
+        <div class="goal-text">
+          تمكين محطات الطاقة السعودية من تبنّي الصيانة الذكية لضمان بنية تحتية
+          طاقوية مستدامة وموثوقة تدعم مسيرة التحول الصناعي ورؤية المملكة ٢٠٣٠
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 FOOTER + QR -->
+    <div class="footer">
+      <div class="footer-qr-wrap">
+        <img
+          class="footer-qr"
+          src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https%3A%2F%2Faishaa2030.github.io%2FNABD-%2Findex.html&color=0060cc&bgcolor=f0f6ff&qzone=1"
+          alt="QR — نبض الطاقة"
+          width="50" height="50">
+        <div class="footer-qr-info">
+          <div class="footer-qr-label">جرّب المنصة</div>
+          <div class="footer-qr-url">nabd-energy.sa</div>
+        </div>
+      </div>
+      <div class="footer-hash">#نبض_الطاقة<br>#رؤية٢٠٣٠<br>#الصيانة_التنبؤية</div>
+      <div class="footer-brand"><b>NABD</b><br>نبض</div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
