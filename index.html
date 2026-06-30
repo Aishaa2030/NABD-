@@ -65,136 +65,395 @@
           </div>
         </div>
         <div class="map-container">
-          <svg id="plantMap" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+          <svg id="plantMap" viewBox="0 0 920 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
             <defs>
-              <pattern id="gridPat" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#c8d8f0" stroke-width="0.5"/>
+              <!-- Ground texture -->
+              <pattern id="groundDot" width="18" height="18" patternUnits="userSpaceOnUse">
+                <circle cx="9" cy="9" r="0.6" fill="#d0ccbc" opacity="0.7"/>
               </pattern>
+              <!-- Fine grid -->
+              <pattern id="gridPat" width="46" height="46" patternUnits="userSpaceOnUse">
+                <path d="M 46 0 L 0 0 0 46" fill="none" stroke="#cccabc" stroke-width="0.4"/>
+              </pattern>
+              <!-- Roof hatch pattern -->
+              <pattern id="hatch45" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                <line x1="0" y1="0" x2="0" y2="7" stroke="#9aa8c0" stroke-width="0.8" opacity="0.25"/>
+              </pattern>
+              <!-- Boiler tube pattern -->
+              <pattern id="tubePat" width="16" height="16" patternUnits="userSpaceOnUse">
+                <circle cx="8" cy="8" r="5" fill="none" stroke="#8898b0" stroke-width="1" opacity="0.35"/>
+              </pattern>
+              <!-- Glow filter -->
               <filter id="glowFilter" x="-60%" y="-60%" width="220%" height="220%">
-                <feGaussianBlur stdDeviation="5" result="blur"/>
-                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                <feGaussianBlur stdDeviation="5" result="b"/>
+                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
               </filter>
-              <linearGradient id="headerGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#dce8fc"/>
-                <stop offset="100%" stop-color="#c8d8f8"/>
+              <!-- Drop shadow -->
+              <filter id="bldShadow" x="-4%" y="-4%" width="112%" height="112%">
+                <feDropShadow dx="4" dy="4" stdDeviation="4" flood-color="#8090a8" flood-opacity="0.28"/>
+              </filter>
+              <!-- Pipe arrow markers -->
+              <marker id="arrSteam" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
+                <path d="M0,1 L6,3.5 L0,6 Z" fill="#5a90d0"/>
+              </marker>
+              <marker id="arrFuel" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
+                <path d="M0,1 L6,3.5 L0,6 Z" fill="#5aaa70"/>
+              </marker>
+              <marker id="arrCool" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
+                <path d="M0,1 L6,3.5 L0,6 Z" fill="#40b8c8"/>
+              </marker>
+              <!-- Building gradients -->
+              <linearGradient id="turbGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#d8e4f4"/><stop offset="100%" stop-color="#b8cce8"/>
               </linearGradient>
+              <linearGradient id="genGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#d4e0f0"/><stop offset="100%" stop-color="#b4c8e4"/>
+              </linearGradient>
+              <linearGradient id="boilGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#f0e4d0"/><stop offset="100%" stop-color="#d8c8b0"/>
+              </linearGradient>
+              <linearGradient id="fuelGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#d0e8d4"/><stop offset="100%" stop-color="#b4d4b8"/>
+              </linearGradient>
+              <radialGradient id="tankTop" cx="40%" cy="35%" r="60%">
+                <stop offset="0%" stop-color="#e8f4ec"/><stop offset="100%" stop-color="#a8c8b0"/>
+              </radialGradient>
+              <radialGradient id="flameGlow" cx="50%" cy="80%" r="60%">
+                <stop offset="0%" stop-color="#fb923c" stop-opacity="0.5"/>
+                <stop offset="100%" stop-color="#fb923c" stop-opacity="0"/>
+              </radialGradient>
             </defs>
 
-            <!-- Background -->
-            <rect width="800" height="500" fill="#eef4fd"/>
-            <rect width="800" height="500" fill="url(#gridPat)"/>
+            <!-- ═══ GROUND ═══ -->
+            <rect width="920" height="580" fill="#e8e4d6"/>
+            <rect width="920" height="580" fill="url(#groundDot)"/>
+            <rect width="920" height="580" fill="url(#gridPat)"/>
 
-            <!-- Ground line -->
-            <line x1="0" y1="420" x2="800" y2="420" stroke="#b0c8e8" stroke-width="1.5"/>
+            <!-- ═══ PERIMETER BOUNDARY ═══ -->
+            <rect x="14" y="14" width="892" height="552" rx="3"
+                  fill="none" stroke="#a8a898" stroke-width="1.5" stroke-dasharray="10,6"/>
+            <!-- Corner markers -->
+            <rect x="11" y="11" width="8" height="8" rx="1" fill="#909080"/>
+            <rect x="901" y="11" width="8" height="8" rx="1" fill="#909080"/>
+            <rect x="11"  y="561" width="8" height="8" rx="1" fill="#909080"/>
+            <rect x="901" y="561" width="8" height="8" rx="1" fill="#909080"/>
 
-            <!-- Steam pipe: Boiler → Turbine -->
-            <polyline points="220,300 220,220 195,220 195,175" fill="none" stroke="#7aaae8" stroke-width="5" stroke-linecap="round"/>
-            <!-- Steam label -->
-            <text x="228" y="250" fill="#8aaac8" font-family="Inter" font-size="8">STEAM</text>
-            <!-- Shaft: Turbine → Generator -->
-            <line x1="300" y1="150" x2="460" y2="150" stroke="#a0bce0" stroke-width="4" stroke-dasharray="8,5"/>
-            <!-- Fuel pipe: Fuel → Boiler -->
-            <polyline points="510,355 510,310 280,310" fill="none" stroke="#a8c890" stroke-width="5" stroke-linecap="round"/>
-            <!-- Cooling: Generator down -->
-            <line x1="575" y1="200" x2="575" y2="420" stroke="#90c0d8" stroke-width="3" stroke-dasharray="6,4"/>
+            <!-- ═══ ROADS ═══ -->
+            <!-- Main horizontal road (between top/bottom units) -->
+            <rect x="14" y="256" width="892" height="26" fill="#d8d4c4"/>
+            <!-- Center line -->
+            <line x1="14" y1="269" x2="906" y2="269" stroke="#c8c418" stroke-width="1.2"
+                  stroke-dasharray="28,20" opacity="0.5"/>
+            <!-- Main vertical road -->
+            <rect x="406" y="14" width="28" height="552" fill="#d8d4c4"/>
+            <!-- Boiler-Control connector road -->
+            <rect x="244" y="256" width="30" height="200" fill="#d8d4c4"/>
 
-            <!-- ── TURBINE ── -->
+            <!-- ═══ PIPES (drawn behind buildings) ═══ -->
+            <!-- STEAM: Boiler → Turbine (blue) -->
+            <polyline points="175,255 175,218 195,218 195,195"
+                      fill="none" stroke="#5a90d0" stroke-width="7"
+                      stroke-linecap="round" stroke-linejoin="round" opacity="0.75"
+                      marker-end="url(#arrSteam)"/>
+            <!-- Steam pipe label -->
+            <rect x="196" y="224" width="42" height="14" rx="3" fill="white" opacity="0.75"/>
+            <text x="217" y="234" text-anchor="middle" fill="#4070b0"
+                  font-family="Inter" font-size="9" font-weight="600">STEAM</text>
+
+            <!-- SHAFT: Turbine → Generator (gold dashed) -->
+            <line x1="336" y1="135" x2="542" y2="135"
+                  stroke="#c8a030" stroke-width="5" stroke-dasharray="12,7" opacity="0.8"/>
+            <rect x="396" y="124" width="52" height="14" rx="3" fill="white" opacity="0.75"/>
+            <text x="422" y="134" text-anchor="middle" fill="#a07820"
+                  font-family="Inter" font-size="9" font-weight="600">SHAFT</text>
+
+            <!-- FUEL: Fuel System → Boiler (green) -->
+            <polyline points="618,360 540,360 540,295 258,295 258,340 175,340"
+                      fill="none" stroke="#5aaa70" stroke-width="7"
+                      stroke-linecap="round" stroke-linejoin="round" opacity="0.75"
+                      marker-end="url(#arrFuel)"/>
+            <rect x="355" y="285" width="42" height="14" rx="3" fill="white" opacity="0.75"/>
+            <text x="376" y="295" text-anchor="middle" fill="#3a8050"
+                  font-family="Inter" font-size="9" font-weight="600">FUEL</text>
+
+            <!-- COOLING: Generator → drain (cyan) -->
+            <polyline points="618,178 618,256 668,256"
+                      fill="none" stroke="#40b8c8" stroke-width="5"
+                      stroke-linecap="round" stroke-linejoin="round" opacity="0.7"
+                      marker-end="url(#arrCool)"/>
+
+            <!-- POWER OUT: Generator → grid (red dashed) -->
+            <line x1="762" y1="178" x2="762" y2="256"
+                  stroke="#e05040" stroke-width="4" stroke-dasharray="8,5" opacity="0.7"/>
+            <rect x="766" y="206" width="44" height="14" rx="3" fill="white" opacity="0.75"/>
+            <text x="788" y="216" text-anchor="middle" fill="#c03020"
+                  font-family="Inter" font-size="9" font-weight="600">POWER</text>
+
+            <!-- ═══ TURBINE BUILDING ═══ -->
             <g id="unit-bg-turbine">
-              <rect x="100" y="75" width="200" height="150" rx="6" fill="url(#headerGrad)" stroke="#a8c0e0" stroke-width="1.5"/>
-              <circle cx="200" cy="150" r="55" fill="none" stroke="#b8cce8" stroke-width="1.5"/>
-              <circle cx="200" cy="150" r="35" fill="none" stroke="#b8cce8" stroke-width="1"/>
-              <circle cx="200" cy="150" r="12" fill="#dce8fc" stroke="#a0b8e0" stroke-width="2"/>
-              <line x1="200" y1="95"  x2="200" y2="122" stroke="#8aaace" stroke-width="2.5"/>
-              <line x1="200" y1="178" x2="200" y2="205" stroke="#8aaace" stroke-width="2.5"/>
-              <line x1="143" y1="150" x2="168" y2="150" stroke="#8aaace" stroke-width="2.5"/>
-              <line x1="232" y1="150" x2="257" y2="150" stroke="#8aaace" stroke-width="2.5"/>
-              <line x1="161" y1="111" x2="180" y2="130" stroke="#8aaace" stroke-width="2"/>
-              <line x1="220" y1="170" x2="239" y2="189" stroke="#8aaace" stroke-width="2"/>
-              <line x1="239" y1="111" x2="220" y2="130" stroke="#8aaace" stroke-width="2"/>
-              <line x1="180" y1="170" x2="161" y2="189" stroke="#8aaace" stroke-width="2"/>
-              <text x="200" y="243" text-anchor="middle" fill="#3a5a8a" font-family="Rajdhani" font-size="12" font-weight="700" letter-spacing="1">TURBINE</text>
-              <text x="200" y="258" text-anchor="middle" fill="#6a8aaa" font-family="Inter" font-size="10">التوربين</text>
+              <!-- Shadow -->
+              <rect x="50" y="50" width="290" height="208" rx="5" fill="#8898b8" opacity="0.18"/>
+              <!-- Body -->
+              <rect x="46" y="46" width="290" height="208" rx="5"
+                    fill="url(#turbGrad)" stroke="#7888b8" stroke-width="1.8"
+                    filter="url(#bldShadow)"/>
+              <!-- Roof hatch -->
+              <rect x="56" y="56" width="270" height="188" rx="3" fill="url(#hatch45)"/>
+              <!-- Structural grid lines -->
+              <line x1="46"  y1="112" x2="336" y2="112" stroke="#7888b8" stroke-width="0.8" opacity="0.5"/>
+              <line x1="46"  y1="178" x2="336" y2="178" stroke="#7888b8" stroke-width="0.8" opacity="0.5"/>
+              <line x1="155" y1="46"  x2="155" y2="254" stroke="#7888b8" stroke-width="0.8" opacity="0.5"/>
+              <line x1="230" y1="46"  x2="230" y2="254" stroke="#7888b8" stroke-width="0.8" opacity="0.5"/>
+              <!-- TURBINE ROTOR (top view) -->
+              <!-- Outer casing -->
+              <circle cx="191" cy="150" r="78" fill="#c8d8f0" stroke="#6878b0" stroke-width="2"/>
+              <!-- Mid ring -->
+              <circle cx="191" cy="150" r="58" fill="#d4e4f8" stroke="#7888c0" stroke-width="1.5"/>
+              <!-- Inner ring -->
+              <circle cx="191" cy="150" r="38" fill="#dceeff" stroke="#8898cc" stroke-width="1.5"/>
+              <!-- Hub -->
+              <circle cx="191" cy="150" r="16" fill="#5870a8" stroke="#4060a0" stroke-width="2.5"/>
+              <circle cx="191" cy="150" r="8"  fill="#7888c0"/>
+              <!-- Blades (8 blades) -->
+              <line x1="191" y1="72"  x2="191" y2="112" stroke="#4060a0" stroke-width="5" stroke-linecap="round"/>
+              <line x1="191" y1="188" x2="191" y2="228" stroke="#4060a0" stroke-width="5" stroke-linecap="round"/>
+              <line x1="113" y1="150" x2="153" y2="150" stroke="#4060a0" stroke-width="5" stroke-linecap="round"/>
+              <line x1="229" y1="150" x2="269" y2="150" stroke="#4060a0" stroke-width="5" stroke-linecap="round"/>
+              <line x1="136" y1="95"  x2="164" y2="123" stroke="#4060a0" stroke-width="4" stroke-linecap="round"/>
+              <line x1="218" y1="177" x2="246" y2="205" stroke="#4060a0" stroke-width="4" stroke-linecap="round"/>
+              <line x1="246" y1="95"  x2="218" y2="123" stroke="#4060a0" stroke-width="4" stroke-linecap="round"/>
+              <line x1="164" y1="177" x2="136" y2="205" stroke="#4060a0" stroke-width="4" stroke-linecap="round"/>
+              <!-- Steam inlet port (left wall) -->
+              <rect x="46" y="140" width="14" height="20" rx="2" fill="#4878c8"/>
+              <rect x="60" y="142" width="6"  height="16" rx="1" fill="#6898e0"/>
+              <!-- Steam outlet port (right wall) -->
+              <rect x="316" y="140" width="14" height="20" rx="2" fill="#4878c8"/>
+              <!-- Access door (bottom) -->
+              <rect x="174" y="246" width="34" height="8" rx="2" fill="#4060a0" opacity="0.7"/>
+              <!-- Ventilation fans (corners) -->
+              <circle cx="66"  cy="66"  r="12" fill="#b8c8e4" stroke="#8898c0" stroke-width="1"/>
+              <line x1="60" y1="66" x2="72" y2="66" stroke="#7888b0" stroke-width="1.5"/>
+              <line x1="66" y1="60" x2="66" y2="72" stroke="#7888b0" stroke-width="1.5"/>
+              <circle cx="316" cy="66"  r="12" fill="#b8c8e4" stroke="#8898c0" stroke-width="1"/>
+              <line x1="310" y1="66" x2="322" y2="66" stroke="#7888b0" stroke-width="1.5"/>
+              <line x1="316" y1="60" x2="316" y2="72" stroke="#7888b0" stroke-width="1.5"/>
             </g>
+            <!-- Turbine label -->
+            <text x="191" y="274" text-anchor="middle" fill="#1a2a60"
+                  font-family="Rajdhani" font-size="14" font-weight="700" letter-spacing="2">TURBINE</text>
+            <text x="191" y="290" text-anchor="middle" fill="#4a5a90"
+                  font-family="Inter" font-size="10">التوربين</text>
 
-            <!-- ── GENERATOR ── -->
+            <!-- ═══ GENERATOR BUILDING ═══ -->
             <g id="unit-bg-generator">
-              <rect x="460" y="75" width="200" height="140" rx="6" fill="url(#headerGrad)" stroke="#a8c0e0" stroke-width="1.5"/>
-              <rect x="478" y="93"  width="164" height="104" rx="4" fill="#d0e2f8"/>
-              <rect x="492" y="107" width="136" height="76"  rx="3" fill="#c0d4f4"/>
-              <path d="M508,107 Q528,145 508,183" fill="none" stroke="#9ab8e0" stroke-width="2"/>
-              <path d="M528,107 Q548,145 528,183" fill="none" stroke="#9ab8e0" stroke-width="2"/>
-              <path d="M548,107 Q568,145 548,183" fill="none" stroke="#9ab8e0" stroke-width="2"/>
-              <path d="M568,107 Q588,145 568,183" fill="none" stroke="#9ab8e0" stroke-width="2"/>
-              <path d="M588,107 Q608,145 588,183" fill="none" stroke="#9ab8e0" stroke-width="2"/>
-              <text x="560" y="234" text-anchor="middle" fill="#3a5a8a" font-family="Rajdhani" font-size="12" font-weight="700" letter-spacing="1">GENERATOR</text>
-              <text x="560" y="249" text-anchor="middle" fill="#6a8aaa" font-family="Inter" font-size="10">المولّد</text>
+              <!-- Shadow -->
+              <rect x="548" y="50" width="226" height="136" rx="5" fill="#8898b8" opacity="0.18"/>
+              <!-- Body -->
+              <rect x="544" y="46" width="226" height="136" rx="5"
+                    fill="url(#genGrad)" stroke="#7888b8" stroke-width="1.8"
+                    filter="url(#bldShadow)"/>
+              <!-- Roof hatch -->
+              <rect x="554" y="56" width="206" height="116" rx="3" fill="url(#hatch45)"/>
+              <!-- Structural lines -->
+              <line x1="544" y1="100" x2="770" y2="100" stroke="#7888b8" stroke-width="0.8" opacity="0.5"/>
+              <line x1="620" y1="46"  x2="620" y2="182" stroke="#7888b8" stroke-width="0.8" opacity="0.5"/>
+              <line x1="700" y1="46"  x2="700" y2="182" stroke="#7888b8" stroke-width="0.8" opacity="0.5"/>
+              <!-- GENERATOR COIL symbol -->
+              <rect x="564" y="62" width="196" height="100" rx="4" fill="#c4d8f0" opacity="0.6"/>
+              <!-- Stator coil waves -->
+              <path d="M574,82 Q584,68 594,82 Q604,96 614,82 Q624,68 634,82 Q644,96 654,82 Q664,68 674,82 Q684,96 694,82 Q704,68 714,82 Q724,96 734,82 Q744,68 750,82"
+                    fill="none" stroke="#5878b8" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M574,114 Q584,100 594,114 Q604,128 614,114 Q624,100 634,114 Q644,128 654,114 Q664,100 674,114 Q684,128 694,114 Q704,100 714,114 Q724,128 734,114 Q744,100 750,114"
+                    fill="none" stroke="#5878b8" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M574,146 Q584,132 594,146 Q604,160 614,146 Q624,132 634,146 Q644,160 654,146 Q664,132 674,146 Q684,160 694,146 Q704,132 714,146 Q724,160 734,146 Q744,132 750,146"
+                    fill="none" stroke="#5878b8" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- Rotor center shaft -->
+              <line x1="544" y1="114" x2="770" y2="114" stroke="#90a8d0" stroke-width="3" stroke-dasharray="6,4" opacity="0.5"/>
+              <!-- Cooling fins (right side) -->
+              <rect x="762" y="56"  width="8" height="12" rx="1" fill="#8898c0"/>
+              <rect x="762" y="74"  width="8" height="12" rx="1" fill="#8898c0"/>
+              <rect x="762" y="92"  width="8" height="12" rx="1" fill="#8898c0"/>
+              <rect x="762" y="110" width="8" height="12" rx="1" fill="#8898c0"/>
+              <rect x="762" y="128" width="8" height="12" rx="1" fill="#8898c0"/>
+              <rect x="762" y="146" width="8" height="12" rx="1" fill="#8898c0"/>
+              <!-- Ventilation fans -->
+              <circle cx="564" cy="66"  r="10" fill="#b4c8e4" stroke="#7888b8" stroke-width="1"/>
+              <line x1="558" y1="66" x2="570" y2="66" stroke="#6878a8" stroke-width="1.5"/>
+              <line x1="564" y1="60" x2="564" y2="72" stroke="#6878a8" stroke-width="1.5"/>
+              <!-- Power output terminal -->
+              <rect x="752" y="104" width="18" height="20" rx="2" fill="#d05040"/>
+              <circle cx="761" cy="114" r="4" fill="#e87060"/>
             </g>
+            <!-- Generator label -->
+            <text x="657" y="204" text-anchor="middle" fill="#1a2a60"
+                  font-family="Rajdhani" font-size="14" font-weight="700" letter-spacing="2">GENERATOR</text>
+            <text x="657" y="220" text-anchor="middle" fill="#4a5a90"
+                  font-family="Inter" font-size="10">المولّد</text>
 
-            <!-- ── BOILER ── -->
+            <!-- ═══ BOILER BUILDING ═══ -->
             <g id="unit-bg-boiler">
-              <rect x="120" y="258" width="160" height="162" rx="6" fill="url(#headerGrad)" stroke="#a8c0e0" stroke-width="1.5"/>
-              <rect x="135" y="272" width="130" height="130" rx="3" fill="#d0e2f0"/>
-              <line x1="155" y1="290" x2="155" y2="390" stroke="#a0bcd8" stroke-width="3"/>
-              <line x1="175" y1="290" x2="175" y2="390" stroke="#a0bcd8" stroke-width="3"/>
-              <line x1="195" y1="290" x2="195" y2="390" stroke="#a0bcd8" stroke-width="3"/>
-              <line x1="215" y1="290" x2="215" y2="390" stroke="#a0bcd8" stroke-width="3"/>
-              <line x1="235" y1="290" x2="235" y2="390" stroke="#a0bcd8" stroke-width="3"/>
-              <!-- Flame glow -->
-              <ellipse cx="200" cy="393" rx="42" ry="8" fill="#f97316" opacity="0.25"/>
-              <ellipse cx="200" cy="395" rx="28" ry="5" fill="#fb923c" opacity="0.35"/>
-              <text x="200" y="432" text-anchor="middle" fill="#3a5a8a" font-family="Rajdhani" font-size="12" font-weight="700" letter-spacing="1">BOILER</text>
-              <text x="200" y="447" text-anchor="middle" fill="#6a8aaa" font-family="Inter" font-size="10">المرجل</text>
+              <!-- Chimney stacks (behind main building) -->
+              <rect x="108" y="282" width="22" height="26" rx="2" fill="#c0b8a8" stroke="#a0988a" stroke-width="1.5"/>
+              <rect x="138" y="282" width="22" height="26" rx="2" fill="#c0b8a8" stroke="#a0988a" stroke-width="1.5"/>
+              <!-- Shadow -->
+              <rect x="52" y="310" width="200" height="220" rx="5" fill="#9090788" opacity="0.15"/>
+              <!-- Body -->
+              <rect x="48" y="306" width="200" height="220" rx="5"
+                    fill="url(#boilGrad)" stroke="#a09080" stroke-width="1.8"
+                    filter="url(#bldShadow)"/>
+              <!-- Roof hatch -->
+              <rect x="58" y="316" width="180" height="200" rx="3" fill="url(#hatch45)"/>
+              <!-- Structural lines -->
+              <line x1="48"  y1="360" x2="248" y2="360" stroke="#a09080" stroke-width="0.8" opacity="0.6"/>
+              <line x1="48"  y1="420" x2="248" y2="420" stroke="#a09080" stroke-width="0.8" opacity="0.6"/>
+              <line x1="110" y1="306" x2="110" y2="526" stroke="#a09080" stroke-width="0.8" opacity="0.6"/>
+              <line x1="180" y1="306" x2="180" y2="526" stroke="#a09080" stroke-width="0.8" opacity="0.6"/>
+              <!-- BOILER tube bundles (top view) -->
+              <rect x="62" y="320" width="176" height="196" rx="2" fill="url(#tubePat)"/>
+              <!-- Header pipes (horizontal) -->
+              <rect x="58" y="340" width="184" height="8" rx="3" fill="#8090a8" opacity="0.5"/>
+              <rect x="58" y="400" width="184" height="8" rx="3" fill="#8090a8" opacity="0.5"/>
+              <rect x="58" y="460" width="184" height="8" rx="3" fill="#8090a8" opacity="0.5"/>
+              <!-- Furnace zone (bottom) -->
+              <rect x="70" y="480" width="156" height="36" rx="3" fill="url(#flameGlow)"/>
+              <ellipse cx="148" cy="516" rx="60" ry="10" fill="#fb923c" opacity="0.3"/>
+              <!-- Feed water inlet -->
+              <rect x="48" y="350" width="14" height="18" rx="2" fill="#4878c8"/>
+              <!-- Steam outlet (top) -->
+              <rect x="120" y="306" width="22" height="10" rx="2" fill="#4878c8"/>
             </g>
+            <!-- Boiler label -->
+            <text x="148" y="546" text-anchor="middle" fill="#1a2a60"
+                  font-family="Rajdhani" font-size="14" font-weight="700" letter-spacing="2">BOILER</text>
+            <text x="148" y="562" text-anchor="middle" fill="#4a5a90"
+                  font-family="Inter" font-size="10">المرجل</text>
 
-            <!-- ── FUEL SYSTEM ── -->
+            <!-- ═══ FUEL SYSTEM (TANK FARM) ═══ -->
             <g id="unit-bg-fuelSystem">
-              <ellipse cx="548" cy="285" rx="38" ry="9" fill="#cce0d8" stroke="#90bca8" stroke-width="1.5"/>
-              <rect x="510" y="285" width="76" height="95" fill="#d4e8dc" stroke="#90bca8" stroke-width="1.5"/>
-              <ellipse cx="548" cy="380" rx="38" ry="9" fill="#cce0d8" stroke="#90bca8" stroke-width="1.5"/>
-              <ellipse cx="635" cy="300" rx="30" ry="8" fill="#cce0d8" stroke="#90bca8" stroke-width="1.5"/>
-              <rect x="605" y="300" width="60" height="80" fill="#d4e8dc" stroke="#90bca8" stroke-width="1.5"/>
-              <ellipse cx="635" cy="380" rx="30" ry="8" fill="#cce0d8" stroke="#90bca8" stroke-width="1.5"/>
-              <line x1="586" y1="335" x2="605" y2="335" stroke="#78a888" stroke-width="4"/>
-              <text x="590" y="432" text-anchor="middle" fill="#3a5a8a" font-family="Rajdhani" font-size="12" font-weight="700" letter-spacing="1">FUEL SYSTEM</text>
-              <text x="590" y="447" text-anchor="middle" fill="#6a8aaa" font-family="Inter" font-size="10">نظام الوقود</text>
+              <!-- Bund wall / containment -->
+              <rect x="544" y="296" width="326" height="236" rx="5"
+                    fill="#d4e8d4" stroke="#88b888" stroke-width="2" stroke-dasharray="6,4"/>
+              <!-- Tank A (large) - top view -->
+              <circle cx="628" cy="350" r="52" fill="#c0d8c0" stroke="#70a870" stroke-width="2"/>
+              <circle cx="628" cy="350" r="52" fill="url(#tankTop)"/>
+              <circle cx="628" cy="350" r="40" fill="none" stroke="#90b890" stroke-width="1" opacity="0.6"/>
+              <circle cx="628" cy="350" r="26" fill="none" stroke="#90b890" stroke-width="1" opacity="0.4"/>
+              <circle cx="628" cy="350" r="10" fill="#70a870" stroke="#508850" stroke-width="1.5"/>
+              <!-- Tank shadow lines -->
+              <path d="M628,300 A48,48 0 0,1 676,350" fill="none" stroke="#508850" stroke-width="1.5" opacity="0.3"/>
+              <!-- Tank B (medium) -->
+              <circle cx="760" cy="340" r="40" fill="#c0d8c0" stroke="#70a870" stroke-width="2"/>
+              <circle cx="760" cy="340" r="40" fill="url(#tankTop)"/>
+              <circle cx="760" cy="340" r="30" fill="none" stroke="#90b890" stroke-width="1" opacity="0.5"/>
+              <circle cx="760" cy="340" r="18" fill="none" stroke="#90b890" stroke-width="1" opacity="0.4"/>
+              <circle cx="760" cy="340" r="8"  fill="#70a870" stroke="#508850" stroke-width="1.5"/>
+              <path d="M760,302 A36,36 0 0,1 796,340" fill="none" stroke="#508850" stroke-width="1.5" opacity="0.3"/>
+              <!-- Tank C (small, bottom-left) -->
+              <circle cx="614" cy="468" r="32" fill="#c0d8c0" stroke="#70a870" stroke-width="2"/>
+              <circle cx="614" cy="468" r="32" fill="url(#tankTop)"/>
+              <circle cx="614" cy="468" r="22" fill="none" stroke="#90b890" stroke-width="1" opacity="0.5"/>
+              <circle cx="614" cy="468" r="7"  fill="#70a870" stroke="#508850" stroke-width="1.5"/>
+              <!-- Tank D (small, bottom-right) -->
+              <circle cx="760" cy="460" r="30" fill="#c0d8c0" stroke="#70a870" stroke-width="2"/>
+              <circle cx="760" cy="460" r="30" fill="url(#tankTop)"/>
+              <circle cx="760" cy="460" r="20" fill="none" stroke="#90b890" stroke-width="1" opacity="0.5"/>
+              <circle cx="760" cy="460" r="7"  fill="#70a870" stroke="#508850" stroke-width="1.5"/>
+              <!-- Tank pipe manifold -->
+              <line x1="628" y1="396" x2="628" y2="436" stroke="#508850" stroke-width="5" stroke-linecap="round"/>
+              <line x1="628" y1="436" x2="760" y2="430" stroke="#508850" stroke-width="5" stroke-linecap="round"/>
+              <line x1="760" y1="378" x2="760" y2="430" stroke="#508850" stroke-width="5" stroke-linecap="round"/>
+              <line x1="614" y1="436" x2="614" y2="436" stroke="#508850" stroke-width="5" stroke-linecap="round"/>
+              <line x1="628" y1="436" x2="614" y2="436" stroke="#508850" stroke-width="4" stroke-linecap="round"/>
+              <line x1="760" y1="430" x2="760" y2="430" stroke="#508850" stroke-width="4" stroke-linecap="round"/>
+              <!-- Pump house -->
+              <rect x="556" y="468" width="44" height="36" rx="3"
+                    fill="#c4d4c0" stroke="#70a070" stroke-width="1.5"/>
+              <rect x="562" y="474" width="32" height="24" rx="2" fill="#b0c8ac" opacity="0.7"/>
+              <text x="578" y="489" text-anchor="middle" fill="#2a5a30"
+                    font-family="Inter" font-size="8" font-weight="600">PUMP</text>
+              <!-- Fuel outlet to boiler -->
+              <rect x="544" y="358" width="14" height="18" rx="2" fill="#5aaa70"/>
             </g>
+            <!-- Fuel System label -->
+            <text x="704" y="548" text-anchor="middle" fill="#1a2a60"
+                  font-family="Rajdhani" font-size="14" font-weight="700" letter-spacing="2">FUEL SYSTEM</text>
+            <text x="704" y="564" text-anchor="middle" fill="#4a5a90"
+                  font-family="Inter" font-size="10">نظام الوقود</text>
 
-            <!-- Control Room -->
+            <!-- ═══ CONTROL ROOM ═══ -->
             <g>
-              <rect x="338" y="340" width="110" height="80" rx="4" fill="#dce8fc" stroke="#a8c0e0" stroke-width="1"/>
-              <rect x="348" y="350" width="90"  height="60" rx="2" fill="#c8d8f4"/>
-              <line x1="358" y1="364" x2="428" y2="364" stroke="#9ab4d8" stroke-width="1"/>
-              <line x1="358" y1="374" x2="428" y2="374" stroke="#9ab4d8" stroke-width="1"/>
-              <line x1="358" y1="384" x2="428" y2="384" stroke="#9ab4d8" stroke-width="1"/>
-              <text x="393" y="400" text-anchor="middle" fill="#4a6a9a" font-family="Rajdhani" font-size="10" letter-spacing="1">CONTROL</text>
+              <!-- Shadow -->
+              <rect x="290" y="310" width="108" height="86" rx="4" fill="#909090" opacity="0.15"/>
+              <!-- Body -->
+              <rect x="286" y="306" width="108" height="86" rx="4"
+                    fill="#d8dce8" stroke="#8890b0" stroke-width="1.5"
+                    filter="url(#bldShadow)"/>
+              <!-- Windows row -->
+              <rect x="296" y="316" width="88" height="16" rx="2" fill="#a8b8d8" opacity="0.6"/>
+              <line x1="330" y1="316" x2="330" y2="332" stroke="#8898c0" stroke-width="1"/>
+              <line x1="360" y1="316" x2="360" y2="332" stroke="#8898c0" stroke-width="1"/>
+              <!-- Control panels -->
+              <rect x="298" y="340" width="86" height="32" rx="2" fill="#c4cce0" opacity="0.7"/>
+              <rect x="304" y="346" width="18" height="10" rx="1" fill="#7888a8"/>
+              <rect x="328" y="346" width="14" height="10" rx="1" fill="#7888a8"/>
+              <rect x="348" y="346" width="14" height="10" rx="1" fill="#7888a8"/>
+              <rect x="368" y="346" width="10" height="10" rx="1" fill="#a05040"/>
+              <!-- Entry door -->
+              <rect x="324" y="384" width="24" height="8" rx="1" fill="#7888a8"/>
+              <!-- Antenna -->
+              <line x1="340" y1="306" x2="340" y2="286" stroke="#909090" stroke-width="1.5"/>
+              <line x1="330" y1="290" x2="350" y2="286" stroke="#909090" stroke-width="1"/>
+              <text x="340" y="410" text-anchor="middle" fill="#2a3a6a"
+                    font-family="Rajdhani" font-size="11" font-weight="700" letter-spacing="1">CONTROL</text>
             </g>
 
-            <!-- ── HOTSPOT: Turbine ── -->
-            <g id="hs-turbine" class="hotspot-group" data-unit="turbine" tabindex="0" role="button" aria-label="التوربين">
-              <circle class="hs-ring" cx="200" cy="150" r="20" fill="none" stroke-width="2" opacity="0.3"/>
-              <circle class="hs-core" cx="200" cy="150" r="9"  stroke-width="2.5"/>
-              <circle class="hs-ping" cx="200" cy="150" r="9"  fill="none" stroke-width="2" opacity="0"/>
+            <!-- ═══ TRANSFORMER YARD ═══ -->
+            <g>
+              <rect x="820" y="282" width="74" height="60" rx="3"
+                    fill="#e8d8c0" stroke="#b09870" stroke-width="1.5"/>
+              <!-- Transformer symbols -->
+              <circle cx="843" cy="307" r="12" fill="none" stroke="#9a7850" stroke-width="2"/>
+              <circle cx="843" cy="307" r="6"  fill="#c09868"/>
+              <circle cx="871" cy="307" r="12" fill="none" stroke="#9a7850" stroke-width="2"/>
+              <circle cx="871" cy="307" r="6"  fill="#c09868"/>
+              <line x1="843" y1="282" x2="843" y2="296" stroke="#9a7850" stroke-width="2"/>
+              <line x1="871" y1="282" x2="871" y2="296" stroke="#9a7850" stroke-width="2"/>
+              <text x="857" y="356" text-anchor="middle" fill="#5a4020"
+                    font-family="Inter" font-size="8" font-weight="600">XFMR</text>
             </g>
 
-            <!-- ── HOTSPOT: Generator ── -->
-            <g id="hs-generator" class="hotspot-group" data-unit="generator" tabindex="0" role="button" aria-label="المولّد">
-              <circle class="hs-ring" cx="560" cy="145" r="20" fill="none" stroke-width="2" opacity="0.3"/>
-              <circle class="hs-core" cx="560" cy="145" r="9"  stroke-width="2.5"/>
-              <circle class="hs-ping" cx="560" cy="145" r="9"  fill="none" stroke-width="2" opacity="0"/>
+            <!-- ═══ HOTSPOTS (top layer, always visible) ═══ -->
+
+            <!-- TURBINE hotspot -->
+            <g id="hs-turbine" class="hotspot-group" data-unit="turbine"
+               tabindex="0" role="button" aria-label="التوربين">
+              <circle class="hs-ring" cx="191" cy="150" r="22" fill="none" stroke-width="2" opacity="0.25"/>
+              <circle class="hs-core" cx="191" cy="150" r="10" stroke-width="2.5"/>
+              <circle class="hs-ping" cx="191" cy="150" r="10" fill="none" stroke-width="2" opacity="0"/>
             </g>
 
-            <!-- ── HOTSPOT: Boiler ── -->
-            <g id="hs-boiler" class="hotspot-group" data-unit="boiler" tabindex="0" role="button" aria-label="المرجل">
-              <circle class="hs-ring" cx="200" cy="339" r="20" fill="none" stroke-width="2" opacity="0.3"/>
-              <circle class="hs-core" cx="200" cy="339" r="9"  stroke-width="2.5"/>
-              <circle class="hs-ping" cx="200" cy="339" r="9"  fill="none" stroke-width="2" opacity="0"/>
+            <!-- GENERATOR hotspot -->
+            <g id="hs-generator" class="hotspot-group" data-unit="generator"
+               tabindex="0" role="button" aria-label="المولّد">
+              <circle class="hs-ring" cx="657" cy="114" r="22" fill="none" stroke-width="2" opacity="0.25"/>
+              <circle class="hs-core" cx="657" cy="114" r="10" stroke-width="2.5"/>
+              <circle class="hs-ping" cx="657" cy="114" r="10" fill="none" stroke-width="2" opacity="0"/>
             </g>
 
-            <!-- ── HOTSPOT: Fuel System ── -->
-            <g id="hs-fuelSystem" class="hotspot-group" data-unit="fuelSystem" tabindex="0" role="button" aria-label="نظام الوقود">
-              <circle class="hs-ring" cx="590" cy="332" r="20" fill="none" stroke-width="2" opacity="0.3"/>
-              <circle class="hs-core" cx="590" cy="332" r="9"  stroke-width="2.5"/>
-              <circle class="hs-ping" cx="590" cy="332" r="9"  fill="none" stroke-width="2" opacity="0"/>
+            <!-- BOILER hotspot -->
+            <g id="hs-boiler" class="hotspot-group" data-unit="boiler"
+               tabindex="0" role="button" aria-label="المرجل">
+              <circle class="hs-ring" cx="148" cy="416" r="22" fill="none" stroke-width="2" opacity="0.25"/>
+              <circle class="hs-core" cx="148" cy="416" r="10" stroke-width="2.5"/>
+              <circle class="hs-ping" cx="148" cy="416" r="10" fill="none" stroke-width="2" opacity="0"/>
+            </g>
+
+            <!-- FUEL SYSTEM hotspot -->
+            <g id="hs-fuelSystem" class="hotspot-group" data-unit="fuelSystem"
+               tabindex="0" role="button" aria-label="نظام الوقود">
+              <circle class="hs-ring" cx="690" cy="400" r="22" fill="none" stroke-width="2" opacity="0.25"/>
+              <circle class="hs-core" cx="690" cy="400" r="10" stroke-width="2.5"/>
+              <circle class="hs-ping" cx="690" cy="400" r="10" fill="none" stroke-width="2" opacity="0"/>
             </g>
           </svg>
         </div>
